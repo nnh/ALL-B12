@@ -1,12 +1,20 @@
-﻿# ALL-B12 基本的な情報をマージするプログラム、締め切り日の設定のみ
+# ALL-B12 基本的な情報をマージするプログラム
 # Mamiko Yonejima
 # 20170817 
 
 # 関数の設定
+# 列抽出とAEgrade切り離し、ファイルの出力をする関数
 MakeDataSet <- function(dataframe){
+  if(flg == 1){
   datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
                           c(2, 4:6, 8, 11, 13, 15, 18, 29:length(colnames(dataframe)))]
   flowsheet_df <- datecut_df[, c(1:9, seq(9, length(colnames(datecut_df)), by = 2))]
+  }else{
+  datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
+                            c(2, 4:6, 8, 11, 13, 15, 18, 29:length(colnames(dataframe)))]
+  flowsheet_df <- datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
+                               c(1:9, seq(9, length(colnames(datecut_df)), by = 2))]
+  }
   merge_df <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
   number <- match("貧血", colnames(merge_df))  # 貧血の行数を検索
   numberplus3 <- number+3
@@ -22,20 +30,30 @@ MakeDataSet <- function(dataframe){
   result[is.na(result)] <- ""
   setwd("../output")
   write.csv(result, paste0("flowsheet",i,".csv"))
-}　 # 列抽出とAEgrade切り離し、ファイルの出力をする関数
+}　 
+# mergeせず、列抽出のみの関数
 MakeDataSet_1 <- function(dataframe){
+  if(flg == 1){
   datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
   datecut_df[is.na(datecut_df)] <- ""
-  datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_strt,
+  datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
              c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
-}   # mergeせず、列抽出のみの関数
+  }else{
+  datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
+  datecut_df[is.na(datecut_df)] <- ""
+  datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
+               c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
+  }
+}  
 
 # 締め切り日、ダウンロード日の設定 ######################
+flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+kDateShimekiri_start <- "20161201"  # flg==2の時に設定
 kDateShimekiri <- "20170531"
 kDownLoadDate <- "_170703_1142"
 #########################################################
 # よみこみ
-setwd("../rawdata")
+setwd("./rawdata")
 list <- list.files()
 file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
 df.name <- sub(".*_", "", file.name)

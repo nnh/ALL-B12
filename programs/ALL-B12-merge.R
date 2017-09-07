@@ -28,7 +28,6 @@ MakeDataSet <- function(dataframe){
   上記4項目の血液毒性を除く有害事象有無 <- merge_df[, numberplus4]
   result <- cbind(merge_df[, c(1,3:numberminus1)], ae_grade_dxt_0, 上記4項目の血液毒性を除く有害事象有無, ae_grade_dxt_1)
   result[is.na(result)] <- ""
-  # setwd("../output")
   write.csv(result, paste0("../output/flowsheet",i,".csv"))
 }　 
 # mergeせず、列抽出のみの関数

@@ -35,8 +35,7 @@ MakeDataSet_1 <- function(dataframe){
   if(flg == 1){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
-    datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
-               c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
+    datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
   }else{
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
@@ -103,7 +102,7 @@ write.csv(flowsheet_df, "../output/cancel2.csv")
 
 datecut_df <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, ]
 result <- datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(32, length(colnames(registration)), by = 2)) ] 
-write.csv(result, "registration.csv")
+write.csv(result, "../output/registration.csv")
 
 datecut_df <- initial[format(as.Date(initial$作成日), "%Y%m%d") <= kDateShimekiri, ]
 initial_df <- datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(30, length(colnames(initial)), by = 2)) ] 

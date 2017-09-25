@@ -48,13 +48,13 @@ MakeDataSet_1 <- function(dataframe){
 flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20161201"  # flg==2の時に設定
 kDateShimekiri <- "20170531"
-kDownLoadDate <- "_170821_1241"
+kDownLoadDate <- "_170703_1142"
 #########################################################
 # よみこみ
 source("./programs/ALL-B12-merge-config.R", encoding = "UTF-8")
 
-setwd("./rawdata")
-list <- list.files()
+
+list <- list.files("./rawdata")
 file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
 df.name <- sub(".*_", "", file.name)
 for (i in 1:length(list)) {

@@ -66,7 +66,7 @@ for (i in 1:length(list)) {
 cutdate_registration <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, c(5, 18)]
 cutdate_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 78, 80)]
 cutdate_risk2 <- risk2 [format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 60)]
-cutdate_cancel  <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 28, 46, 40, 41, 42, 52)]
+cutdate_cancel  <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 28, 32, 40, 41, 42, 52)]
 cutdate_cancel2  <- cancel2[format(as.Date(cancel2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 32:34)]
 cutdate_allocation1  <- allocation1[format(as.Date(allocation1$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 28)]
 cutdate_allocation2  <- allocation2[format(as.Date(allocation2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 28)]

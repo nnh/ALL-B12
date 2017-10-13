@@ -91,16 +91,30 @@ for(i in c(1,3:42)){
   MakeDataSet(eval(parse(text = paste0("flowsheet", i))))
 }
 
-flowsheet_df <- MakeDataSet_1(risk1)
-write.csv(flowsheet_df, "../output/risk1.csv", row.names =  F)
-flowsheet_df <- MakeDataSet_1(risk2)
-write.csv(flowsheet_df, "../output/risk2.csv", row.names =  F)
-flowsheet_df <- MakeDataSet_1(risk3)
-write.csv(flowsheet_df, "../output/risk3.csv", row.names =  F)
-flowsheet_df <- MakeDataSet_1(cancel)
-write.csv(flowsheet_df, "../output/cancel.csv", row.names =  F)
-flowsheet_df <- MakeDataSet_1(cancel2)
-write.csv(flowsheet_df, "../output/cancel2.csv" , row.names =  F)
+risk1_df <- MakeDataSet_1(risk1)
+write.csv(risk1_df, "../output/risk1.csv", row.names =  F)
+risk2_df <- MakeDataSet_1(risk2)
+write.csv(risk2_df, "../output/risk2.csv", row.names =  F)
+risk3_df <- MakeDataSet_1(risk3)
+write.csv(risk3_df, "../output/risk3.csv", row.names =  F)
+cancel_df <- MakeDataSet_1(cancel)
+write.csv(cancel_df, "../output/cancel.csv", row.names =  F)
+cancel2_df <- MakeDataSet_1(cancel2)
+write.csv(cancel2_df, "../output/cancel2.csv" , row.names =  F)
+
+# riskをすべてマージしたシートを作成
+colnames(risk1_df) <- paste0("risk1_", colnames(risk1_df))
+colnames(risk2_df) <- paste0("risk2_", colnames(risk2_df))
+colnames(risk3_df) <- paste0("risk3_", colnames(risk3_df))
+colnames(cancel_df) <- paste0("cancel_", colnames(cancel_df))
+merge_1 <- merge(risk1_df, risk2_df, by.x = "risk1_症例登録番号",  by.y = "risk2_症例登録番号",  all = T)
+merge_2 <- merge(merge_1, risk3_df, by.x = "risk1_症例登録番号",  by.y = "risk3_症例登録番号", all = T)
+risk_result <- merge(merge_2, cancel_df, by.x = "risk1_症例登録番号",  by.y = "cancel_症例登録番号", all = T)
+colnames(risk_result)[1] <- "症例登録番号"
+risk_result[is.na(risk_result)] <- ""
+write.csv(risk_result, "../output/risk_allSheet.csv" , row.names =  F)
+
+
 
 datecut_df <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, ]
 result <- datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(32, length(colnames(registration)), by = 2)) ] 

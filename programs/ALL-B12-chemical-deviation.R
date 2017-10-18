@@ -58,7 +58,7 @@ Deviation <- function(flowsheet) {
 }
  ## Config #####
 # 締め切り日、ダウンロード日の設定 ######################
-flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20161201"  # flg==2の時に設定
 kDateShimekiri <- "20170531"
 kDownLoadDate <- "_170703_1142"

@@ -470,6 +470,10 @@ for(i in 13:20){
                            "$X6.MP実投与量.mg..日, flowsheet", i, "$X6.MP実投与回数.14日, flowsheet", i, "$X6.MP減量.mg.)")))
 }
 
+# 中間維持療法は体表面積のみ計算
+for(i in c(21:26, 30, 34, 38, 42)){
+  eval(parse(text = paste0("flowsheet", i, 
+                           "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))}
 # 逸脱一覧を作成する
 for(i in c(1, 3:20)){
 assign(paste0("flowsheet_chemical_dev", i), Deviation(eval(parse(text = paste0("flowsheet", i)))))
@@ -480,7 +484,14 @@ dir.create("../output/review")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', row.names = F)")))}
-
+for(i in c(21:26, 30, 34, 38, 42)){
+  eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', row.names = F)")))}
+for(i in c(27:29, 31:33, 35:37, 39:41)){
+  eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', row.names = F)")))}
+flowsheet43[is.na(flowsheet43)] <- ""
+write.csv(flowsheet43, "../output/review/flowsheet43_raw/csv", row.names = F)
 dir.create("../output/deviation")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet_chemical_dev", i, "[is.na(flowsheet_chemical_dev", i, ")] <- ''")))

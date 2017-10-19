@@ -2,71 +2,60 @@
 # 作成者：kaoru torii
 # 作成日：2016/06/15
 # ver.2.0
-
+# 作成者：mamiko yonejima
+# 作成日：2017/10/19
+# ver.3.0
 #########################
-#wdの変更
-setwd("../programs")
+Dxt <- function(flowsheet){
+  flowsheet[, c(2, 18, 5)]
+}
 
+## Config #####
+prtpath <- "//192.168.200.222/Datacenter/Users/yonejima/ALL-B12"
+kDownLoadDate <- "_170703_1142"
+###############
+# Read csv
+list <- list.files(paste0(prtpath, "./rawdata"))
+file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
+df.name <- sub(".*_", "", file.name)
+setwd(paste0(prtpath, "./rawdata"))
+for (i in 1:length(list)) {
+  assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
+}
+deviations <- read.csv(list.files(paste0(prtpath, "./rawdata"), pattern = "deviations"))
 #必要項目の抽出
+for(i in c(1, 3:43)){
+  eval(parse(text = paste0("dxt_flowsheet", i, "<- Dxt(flowsheet", i, ")")))
+    }
+for(i in 1:3){
+  eval(parse(text = paste0("dxt_risk", i, "<- Dxt(risk", i, ")")))
+}
+dxt_initial <- Dxt(initial)
 
-F1<- fs1[,c("作成日","症例登録番号","シート名")]
-F3<- fs3[,c("作成日","症例登録番号","シート名")]
-F4<- fs4[,c("作成日","症例登録番号","シート名")]
-F5<- fs5[,c("作成日","症例登録番号","シート名")]
-F6<- fs6[,c("作成日","症例登録番号","シート名")]
-F7<- fs7[,c("作成日","症例登録番号","シート名")]
-F8<- fs8[,c("作成日","症例登録番号","シート名")]
-F9<- fs9[,c("作成日","症例登録番号","シート名")]
-F10<- fs10[,c("作成日","症例登録番号","シート名")]
-F11<- fs11[,c("作成日","症例登録番号","シート名")]
-F12<- fs12[,c("作成日","症例登録番号","シート名")]
-F13<- fs13[,c("作成日","症例登録番号","シート名")]
-F14<- fs14[,c("作成日","症例登録番号","シート名")]
-F15<- fs15[,c("作成日","症例登録番号","シート名")]
-F16<- fs16[,c("作成日","症例登録番号","シート名")]
-F17<- fs17[,c("作成日","症例登録番号","シート名")]
-F18<- fs18[,c("作成日","症例登録番号","シート名")]
-F19<- fs19[,c("作成日","症例登録番号","シート名")]
-F20<- fs20[,c("作成日","症例登録番号","シート名")]
-F21<- fs21[,c("作成日","症例登録番号","シート名")]
-F22<- fs22[,c("作成日","症例登録番号","シート名")]
-F23<- fs23[,c("作成日","症例登録番号","シート名")]
-F24<- fs24[,c("作成日","症例登録番号","シート名")]
-F25<- fs25[,c("作成日","症例登録番号","シート名")]
-F26<- fs26[,c("作成日","症例登録番号","シート名")]
-F27<- fs27[,c("作成日","症例登録番号","シート名")]
-F28<- fs28[,c("作成日","症例登録番号","シート名")]
-F29<- fs29[,c("作成日","症例登録番号","シート名")]
-F30<- fs30[,c("作成日","症例登録番号","シート名")]
-F31<- fs31[,c("作成日","症例登録番号","シート名")]
-F32<- fs32[,c("作成日","症例登録番号","シート名")]
-F33<- fs33[,c("作成日","症例登録番号","シート名")]
-F34<- fs34[,c("作成日","症例登録番号","シート名")]
-F35<- fs35[,c("作成日","症例登録番号","シート名")]
-F36<- fs36[,c("作成日","症例登録番号","シート名")]
-F38<- fs38[,c("作成日","症例登録番号","シート名")]
-F39<- fs39[,c("作成日","症例登録番号","シート名")]
-F42<- fs42[,c("作成日","症例登録番号","シート名")]
-F43<- fs43[,c("作成日","症例登録番号","シート名")]
-Ini<- ini[,c("作成日","症例登録番号","シート名")]
-Risk1 <- rs1[,c("作成日","症例登録番号","シート名")]
-Risk2 <- rs2[,c("作成日","症例登録番号","シート名")]
-Risk3 <- rs3[,c("作成日","症例登録番号","シート名")]
+# 逸脱一覧のリストに作成日をマージさせるためフローシートのファイルを結合し、作成日リストを作成する(縦結合)
+matSum <- dxt_initial
+for(i in 1:3){
+  matSum <- rbind(matSum, eval(parse(text = paste0("dxt_risk", i))))
+}
+for(i in c(1, 3:43)){
+  matSum <- rbind(matSum, eval(parse(text = paste0("dxt_flowsheet", i))))
+}
 
-#逸脱一覧のリストに作成日をマージさせるためフローシートのファイルを結合し、作成日リストを作成する(縦結合)
-creation_date<- rbind(F1,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,
-                      F17,F18,F19,F20,F21,F22,F23,F24,F25,F26,F27,F28,F29,
-                      F30,F31,F32,F33,F34,F35,F36,F38,F39,F42,F43,Ini,Risk1,Risk2,Risk3)
 
-#変数名の変更(変数名の頭に「b_」をつける)
-colnames(creation_date)<- paste0("b_",colnames(creation_date))
-
-#dvシート(逸脱一覧csv)grade4およびgrade5を削除(a1_入力値.表示データ.項目内のgradeが逸脱となっている行を削除する)
-itudatu_ae4 <- grep("-4",dv$入力値.表示データ.)
-itudatu_nae4<- dv[-c(itudatu_ae4[1:length(itudatu_ae4)]),]
-
-itudatu_ae<- grep("-5",itudatu_nae4$入力値.表示データ.)
-itudatu_nae<- itudatu_nae4[-c(itudatu_ae[1:length(itudatu_ae)]),]
+# dvシート(逸脱一覧csv)grade4およびgrade5を削除(a1_入力値.表示データ.項目内のgradeが逸脱となっている行を削除する)
+dxt_deviations <- deviations[substring(deviations$入力値.表示データ., 9, 9) != "-", ]
+# IA day1投与日を削除
+dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日(治療開始日)",]
+# IB day36投与日を削除
+dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day36投与日",]
+# 強化療法のday1投与日を削除
+dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日",]
+# 強化療法の本コース最終投与日を削除 ## TODO koko
+dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M2)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
+dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
+dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5+L)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
+dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5+VL)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
+dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法_HRブロック(HR1)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
 
 #施設科名を分ける
 colnames(itudatu_nae)

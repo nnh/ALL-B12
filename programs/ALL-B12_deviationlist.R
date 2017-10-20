@@ -40,74 +40,42 @@ for(i in 1:3){
 for(i in c(1, 3:43)){
   matSum <- rbind(matSum, eval(parse(text = paste0("dxt_flowsheet", i))))
 }
-
-
+matSum$key <- paste0(matSum$症例登録番号, matSum$シート名)
+matSum <- matSum[, c(1, 4)]
 # dvシート(逸脱一覧csv)grade4およびgrade5を削除(a1_入力値.表示データ.項目内のgradeが逸脱となっている行を削除する)
 dxt_deviations <- deviations[substring(deviations$入力値.表示データ., 9, 9) != "-", ]
 # IA day1投与日を削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日(治療開始日)",]
-# IB day36投与日を削除
-dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day36投与日",]
 # 強化療法のday1投与日を削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日",]
-# 強化療法の本コース最終投与日を削除 ## TODO koko
-dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M2)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
-dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
-dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5+L)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
-dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法(M5+VL)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
-dxt_deviations <- dxt_deviations[dxt_deviations$シート名 == "フローシート：強化療法_HRブロック(HR1)" &&  dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日"  ,]
-
-#施設科名を分ける
-colnames(itudatu_nae)
-itudatu_nae$施設名<- sub("-.*","",itudatu_nae$施設名科名)
-
-#変数名の変更(変数名の頭に「 」をつける)
-colnames(itudatu_nae)<- paste0("",colnames(itudatu_nae))
-
+# 強化療法の本コース最終投与日を削除 
+dxt_deviations_0 <- subset(dxt_deviations, dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日" )
+dxt_deviations_1 <- dxt_deviations[dxt_deviations$フィールドラベル == "本コース試験治療薬剤最終投与日" ,]
+dxt_deviations_2 <- dxt_deviations_1[dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB)" | dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+L)" |  dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+VL)", ]
+dxt_deviations <- rbind(dxt_deviations_0, dxt_deviations_2)
+# followupを削除 
+dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "最終転帰確認日", ]
+colnames(dxt_deviations)[1] <- "症例登録番号"
+dxt_deviations$key <- paste0(dxt_deviations$症例登録番号, dxt_deviations$シート名)
+#施設名を抽出
+dxt_deviations$施設名<- sub("-.*","",dxt_deviations$施設名科名)
 #必要な項目の抽出
-colnames(itudatu_nae)
-itudatu<- itudatu_nae[,c("症例番号","順序付きフローシート順序","施設名","シート名","フィールドラベル","入力値.表示データ.")]
-
+dxt_deviations　<- dxt_deviations[,c("症例登録番号", "順序付きフローシート順序", "施設名","シート名", "フィールドラベル", "入力値.表示データ.", "key")]
 #リスクシートのマージ
-risk3<- merge(rs1,rs2,by=c("症例登録番号"),all.x=T)
-
+risk <- merge(risk1, risk2, by = "症例登録番号", all = T)
 #症例番号、暫定リスク、確定リスクの抽出
-risk<- risk3[,c("症例登録番号","暫定リスク判定結果","確定リスク判定結果")]
-
+dxt_risk <- risk[, c(1, 80, 141)]
 #中止届の必要項目の抽出
-cancel<- cs1[,c("症例登録番号","中止時期.コース名.","治療終了.中止.理由","中止時期.day.week.","中止時期.日数.週数.")]
+dxt_cancel <- cancel[,c("症例登録番号","中止時期.コース名.","治療終了.中止.理由","中止時期.day.week.","中止時期.日数.週数.")]
 
-#マージをする(itudatu,creation_date,risk,cancelの4ファイル)※キーはitudatuファイルの「症例番号」
-colnames(itudatu)
-colnames(creation_date)
-
-itudatu_a<- merge(itudatu,creation_date,by.x=c("症例番号","シート名"),by.y=c("b_症例登録番号","b_シート名"),all.x=T)
-itudatu_b<- merge(itudatu_a,risk,by.x="症例番号",by.y="症例登録番号",all.x=T)
-itudatu_c<- merge(itudatu_b,cancel,by.x="症例番号",by.y="症例登録番号",all.x=T)
-
-#フローシート名の「フローシート：」を外す
-colnames(itudatu_c)
-study_<- sub("フローシート："," ",itudatu_c$シート名)
-itudatulist3<- data.frame(itudatu_c,study_)
-
-#並び替え
-colnames(itudatulist3)
-itudatulist2<- itudatulist3[,c("b_作成日","順序付きフローシート順序","症例番号","施設名","暫定リスク判定結果", "確定リスク判定結果",
-                               "シート名","フィールドラベル","入力値.表示データ.","中止時期.コース名.","治療終了.中止.理由","中止時期.day.week.","中止時期.日数.週数.")]
-
-#必要項目の抽出
-itudatulist1<- itudatulist3[,c("b_作成日","順序付きフローシート順序","症例番号","施設名","暫定リスク判定結果","確定リスク判定結果","study_","フィールドラベル","入力値.表示データ."
-                               ,"中止時期.コース名.","治療終了.中止.理由","中止時期.day.week.","中止時期.日数.週数.")]    
-
-#名前の変更
-names(itudatulist1)[3:9]<- c("ALL-B12 No.","施設名","暫定リスク","確定リスク","治療コース","項目","内容") 
-
+#マージをする
+m_risk_dev <- merge(dxt_risk, dxt_deviations, by = "症例登録番号", all.y = T)
+m_risk_dev_cancel <- merge(m_risk_dev, dxt_cancel, by = "症例登録番号", all.x = T)
+result <- merge(matSum, m_risk_dev_cancel, by = "key", all.y = T)
+result <- result[, -1]
 #ソートする
-itudatulist<- order(itudatulist1$治療コース)
-itudatulist<- (itudatulist1[itudatulist,])
-itudatulist
-
+result<- result[order(result$順序付きフローシート順序),]
 #csvファイルへの書き出し
-setwd("../output")
-write.csv(itudatulist,PathOutputdv,row.names=FALSE)
+result[is.na(result)] <- ""
+write.csv(result, eval(parse(text = paste0("'", prtpath, "/output/deviation/deviations.csv'"))), row.names=FALSE)
 

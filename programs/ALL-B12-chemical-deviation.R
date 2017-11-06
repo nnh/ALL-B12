@@ -58,7 +58,7 @@ Deviation <- function(flowsheet) {
 }
 ## Config #####
 # 締め切り日、ダウンロード日の設定 ######################
-flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20161201"  # flg==2の時に設定
 kDateShimekiri <- "20170531"
 kDownLoadDate <- "_170703_1142"
@@ -245,11 +245,11 @@ flowsheet9$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet9$Body_Sur
 # flowsheet10
 flowsheet10$Body_Surface_Area <- Body_Surface_Area(flowsheet10$身長.cm., flowsheet10$体重.kg.)
 ## DEX
-flowsheet10$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
+flowsheet10$DEX_実投与量_percent <- Chemical_Deviation(1, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
                                                    flowsheet10$DEX実投与日数.5日, flowsheet10$DEX減量.mg.)
-flowsheet10$VCR_実投与回数_percent <- Chemical_Deviation(2, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
+flowsheet10$DEX_実投与回数_percent <- Chemical_Deviation(2, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
                                                     flowsheet10$DEX実投与日数.5日, flowsheet10$DEX減量.mg.)
-flowsheet10$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
+flowsheet10$DEX_総投与量_percent <- Chemical_Deviation(3, flowsheet10$Body_Surface_Area, 20, 5, flowsheet10$DEX実投与量.mg..日,
                                                    flowsheet10$DEX実投与日数.5日, flowsheet10$DEX減量.mg.)
 ## HD-Ara-C
 flowsheet10$HD.Ara.C_実投与量_percent <- Chemical_Deviation(1, flowsheet10$Body_Surface_Area, 2000, 4, flowsheet10$HD.Ara.C実投与量.mg..回,
@@ -341,12 +341,12 @@ flowsheet12$CPA_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_S
 ## L.ASP(flowsheet10-12)
 names(flowsheet10)[46] <- "L.ASP減量.U."
 for(i in 10:12){
-  # eval(parse(text = paste0("flowsheet", i,
-  #                          "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
-  #                          "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.2回, flowsheet", i, "$L.ASP減量.U.)")))
-  # eval(parse(text = paste0("flowsheet", i,
-  #                          "$L.ASP_実投与量_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
-  #                          "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.2回, flowsheet", i, "$L.ASP減量.U.)")))
+  eval(parse(text = paste0("flowsheet", i,
+                        "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
+                          "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.2回, flowsheet", i, "$L.ASP減量.U.)")))
+  eval(parse(text = paste0("flowsheet", i,
+                          "$L.ASP_実投与回数_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
+                         "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.2回, flowsheet", i, "$L.ASP減量.U.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$L.ASP_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.2回, flowsheet", i, "$L.ASP減量.U.)")))

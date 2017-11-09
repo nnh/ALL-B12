@@ -436,7 +436,7 @@ for(i in 15:20){
 ## CPA
 for(i in 13:20){
   eval(parse(text = paste0("flowsheet", i,
-                           "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,
+                           "$CPA_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,
                            "$CPA実投与量.mg..回, flowsheet", i, "$CPA実投与回数.1回, flowsheet", i, "$CPA減量.mg.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$CPA_実投与量_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,

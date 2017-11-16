@@ -27,7 +27,7 @@ Chemical_Deviation <- function(flg, bsa, difine_dose1, difine_dose2, actual_dose
   }
 }
 # 薬剤逸脱 HD-MTX　Protocol M-Down  
-# difine_total_d:M2:6.5, M5:15.5
+# difine_total_d:M2:6.5, M5:15.5,HR2,HR2:0.5
 Chemical_Deviation_Down <- function(flg, bsa, difine_dose1, difine_dose2, actual_dose1, actual_dose2, weight_loss, down, difine_total_d){
   dd <- bsa* difine_dose1
   if(flg == 1){
@@ -286,12 +286,12 @@ flowsheet11$VDS_実投与回数_percent <- Chemical_Deviation(2, flowsheet11$Bod
 flowsheet11$VDS_総投与量_percent <- Chemical_Deviation(3, flowsheet11$Body_Surface_Area, 3.0, 2, flowsheet11$VDS実投与量.mg..回,
                                                    flowsheet11$VDS実投与回数.2回, flowsheet11$VDS減量.mg.)
 ## HD-MTX
-flowsheet11$HD.MTX_実投与量_percent <- Chemical_Deviation(1, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
-                                                      flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g.)
-flowsheet11$HD.MTX_実投与回数_percent <- Chemical_Deviation(2, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
-                                                       flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g.)
-flowsheet11$HD.MTX_総投与量_percent <- Chemical_Deviation(3, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
-                                                      flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g.)
+flowsheet11$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
+                                                      flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g., flowsheet11$ダウン症である, 0.5)
+flowsheet11$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
+                                                       flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g., flowsheet11$ダウン症である, 0.5)
+flowsheet11$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet11$Body_Surface_Area, 5, 1, flowsheet11$HD.MTX実投与量.g..回,
+                                                      flowsheet11$HD.MTX実投与回数.1回, flowsheet11$HD.MTX減量.g., flowsheet11$ダウン症である, 0.5)
 ## IFO
 flowsheet11$IFO_実投与量_percent <- Chemical_Deviation(1, flowsheet11$Body_Surface_Area, 800, 5, flowsheet11$IFO実投与量.mg..回,
                                                    flowsheet11$IFO実投与回数.5回, flowsheet11$IFO減量.mg.)
@@ -325,12 +325,12 @@ flowsheet12$VCR_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Bod
 flowsheet12$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 1.5, 2, flowsheet12$VCR実投与量.mg..回,
                                                    flowsheet12$VCR実投与回数.2回, flowsheet12$VCR減量.mg.)
 ## HD-MTX
-flowsheet12$HD.MTX_実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
-                                                      flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g.)
-flowsheet12$HD.MTX_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
-                                                       flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g.)
-flowsheet12$HD.MTX_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
-                                                      flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g.)
+flowsheet12$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
+                                                      flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g., flowsheet12$ダウン症である, 0.5)
+flowsheet12$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
+                                                       flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g., flowsheet12$ダウン症である, 0.5)
+flowsheet12$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet12$Body_Surface_Area, 5, 1, flowsheet12$HD.MTX実投与量.g..回,
+                                                      flowsheet12$HD.MTX実投与回数.1回, flowsheet12$HD.MTX減量.g., flowsheet12$ダウン症である, 0.5)
 ## CPA
 flowsheet12$CPA_実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 200, 5, flowsheet12$CPA実投与量.mg..回,
                                                    flowsheet12$CPA実投与回数.5回, flowsheet12$CPA減量.mg.)
@@ -338,6 +338,13 @@ flowsheet12$CPA_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Bod
                                                     flowsheet12$CPA実投与回数.5回, flowsheet12$CPA減量.mg.)
 flowsheet12$CPA_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 200, 5, flowsheet12$CPA実投与量.mg..回,
                                                    flowsheet12$CPA実投与回数.5回, flowsheet12$CPA減量.mg.)
+## HD.Ara.C
+flowsheet12$HD.Ara.C実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+                                                   flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
+flowsheet12$HD.Ara.C_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+                                                         flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
+flowsheet12$HD.Ara.C_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+                                                        flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
 ## L.ASP(flowsheet10-12)
 names(flowsheet10)[46] <- "L.ASP減量.U."
 for(i in 10:12){
@@ -416,7 +423,7 @@ for(i in 13:14){
                            "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 10000, 4, flowsheet", i,
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.4回, flowsheet", i, "$L.ASP減量.U.)")))
   eval(parse(text = paste0("flowsheet", i,
-                           "$L.ASP_実投与量_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 10000, 4, flowsheet", i,
+                           "$L.ASP_実投与回数_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 10000, 4, flowsheet", i,
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.4回, flowsheet", i, "$L.ASP減量.U.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$L.ASP_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, "$Body_Surface_Area, 10000, 4, flowsheet", i,
@@ -427,7 +434,7 @@ for(i in 15:20){
                            "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 10000, 8, flowsheet", i,
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.8回, flowsheet", i, "$L.ASP減量.U.)")))
   eval(parse(text = paste0("flowsheet", i,
-                           "$L.ASP_実投与量_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 10000, 8, flowsheet", i,
+                           "$L.ASP_実投与回数_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 10000, 8, flowsheet", i,
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.8回, flowsheet", i, "$L.ASP減量.U.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$L.ASP_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, "$Body_Surface_Area, 10000, 8, flowsheet", i,
@@ -439,7 +446,7 @@ for(i in 13:20){
                            "$CPA_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,
                            "$CPA実投与量.mg..回, flowsheet", i, "$CPA実投与回数.1回, flowsheet", i, "$CPA減量.mg.)")))
   eval(parse(text = paste0("flowsheet", i,
-                           "$CPA_実投与量_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,
+                           "$CPA_実投与回数_percent <- Chemical_Deviation(2, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,
                            "$CPA実投与量.mg..回, flowsheet", i, "$CPA実投与回数.1回, flowsheet", i, "$CPA減量.mg.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$CPA_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, "$Body_Surface_Area, 500, 1, flowsheet", i,

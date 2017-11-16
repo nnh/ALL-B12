@@ -7,7 +7,7 @@
 # ver.3.0
 #########################
 Dxt <- function(flowsheet){
-  flowsheet[, c(2, 18, 5)]
+  flowsheet[, c(1, 2, 9)]
 }
 
 ## Config #####

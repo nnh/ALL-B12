@@ -7,13 +7,13 @@
 MakeDataSet <- function(dataframe){
   if(flg == 1){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
-                            c(2, 4:6, 8, 11, 13, 15, 18, 29:length(colnames(dataframe)))]
-    flowsheet_df <- datecut_df[, c(1:9, seq(9, length(colnames(datecut_df)), by = 2))]
+                            c(1:10, 15:length(colnames(dataframe)))]
+    flowsheet_df <- datecut_df[, c(1:10, seq(12, length(colnames(datecut_df)), by = 2))]
   }else{
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
-                            c(2, 4:6, 8, 11, 13, 15, 18, 29:length(colnames(dataframe)))]
+                            c(1:10, 15:length(colnames(dataframe)))]
     flowsheet_df <- datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
-                               c(1:9, seq(9, length(colnames(datecut_df)), by = 2))]
+                               c(1:10, seq(12, length(colnames(datecut_df)), by = 2))]
   }
   merge_df <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
   number <- match("貧血", colnames(merge_df))  # 貧血の行数を検索
@@ -35,37 +35,37 @@ MakeDataSet_1 <- function(dataframe){
   if(flg == 1){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
-    datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
+    datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ] 
   }else{
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
     datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
-               c(2, 4:6, 8, 11, 13, 15, 18, seq(28, length(colnames(datecut_df)), by = 2)) ] 
+               c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ] 
   }
 }  
 
 # # 締め切り日、ダウンロード日の設定 ######################
-# flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
-# kDateShimekiri_start <- "20161201"  # flg==2の時に設定
-# kDateShimekiri <- "20170531"
-# kDownLoadDate <- "_170703_1142"
+# flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+# kDateShimekiri_start <- "20170601"  # flg==2の時に設定
+# kDateShimekiri <- "20171130"
+# kDownLoadDate <- "_171116_1434"
 # #########################################################
 # よみこみ
-# source("./programs/ALL-B12-merge-config.R", encoding = "UTF-8")
 # output,rawdataはaronas上にて入出力する
-# prtpath <- "//192.168.200.222/Datacenter/Users/yonejima/ALL-B12"
-
-list <- list.files(paste0(prtpath, "./rawdata"))
+# prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/precleaning"
+# folder <- "ALL-B12_sheets_171116_1434"
+list <- list.files(paste0(prtpath, "./rawdata/",  folder))
 file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
+file.name[1] <- "registration"
 df.name <- sub(".*_", "", file.name)
-setwd(paste0(prtpath, "./rawdata"))
+setwd(paste0(prtpath, "./rawdata/", folder))
 for (i in 1:length(list)) {
-  assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
+   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
 }
 
 # リスク、中止などの情報を含んだ基本的なデータセットの作成
-cutdate_registration <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, c(5, 18)]
-cutdate_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 78, 80)]
+cutdate_registration <- registration[format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(1:3)]
+cutdate_risk1 <- risk1[format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 78, 80)]
 cutdate_risk2 <- risk2 [format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 60)]
 cutdate_cancel  <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 28, 32, 40, 41, 42, 52)]
 cutdate_cancel2  <- cancel2[format(as.Date(cancel2$作成日), "%Y%m%d") <= kDateShimekiri, c(18, 32:34)]

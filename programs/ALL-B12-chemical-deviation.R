@@ -53,18 +53,18 @@ Deviation <- function(flowsheet) {
   no <- match("Body_Surface_Area", colnames(flowsheet)) + 1
   dxt <- flowsheet[, c(no:length(colnames(flowsheet)))]
   dxt_div <- dxt[!apply(is.na(dxt), 1, all), ]
-  dxt_flowsheet <- flowsheet[, 1:19]
+  dxt_flowsheet <- flowsheet[, 1:26]
   merge(dxt_flowsheet, dxt_div, by="row.names",  all.y = T)
 }
 ## Config #####
-# 締め切り日、ダウンロード日の設定 ######################
-flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
-kDateShimekiri_start <- "20161201"  # flg==2の時に設定
-kDateShimekiri <- "20170531"
-kDownLoadDate <- "_170703_1142"
 # output,rawdataはaronas上にて入出力する
-prtpath <- "//192.168.200.222/Datacenter/Users/yonejima/ALL-B12"
-#########################################################
+prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/precleaning"
+# 締め切り日、ダウンロード日の
+flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+kDateShimekiri_start <- "20170601"  # flg==2の時に設定
+kDateShimekiri <- "20171130"
+kDownLoadDate <- "_171116_1434"
+kJplsg <- "JPLSG_registration_171109_1228.csv"
 
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 
@@ -498,7 +498,7 @@ for(i in c(27:29, 31:33, 35:37, 39:41)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', row.names = F)")))}
 flowsheet43[is.na(flowsheet43)] <- ""
-write.csv(flowsheet43, "../output/review/flowsheet43_raw/csv", row.names = F)
+write.csv(flowsheet43, "../output/review/flowsheet43_raw.csv", row.names = F)
 dir.create("../output/deviation")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet_chemical_dev", i, "[is.na(flowsheet_chemical_dev", i, ")] <- ''")))

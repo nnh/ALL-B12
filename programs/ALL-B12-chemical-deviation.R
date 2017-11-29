@@ -271,11 +271,11 @@ flowsheet10$VP.16_総投与量_percent <- Chemical_Deviation(3, flowsheet10$Body
 # flowsheet11
 flowsheet11$Body_Surface_Area <- Body_Surface_Area(flowsheet11$身長.cm., flowsheet11$体重.kg.)
 ## DEX
-flowsheet11$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
+flowsheet11$DEX_実投与量_percent <- Chemical_Deviation(1, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
                                                    flowsheet11$DEX実投与日数.5日, flowsheet11$DEX減量.mg.)
-flowsheet11$VCR_実投与回数_percent <- Chemical_Deviation(2, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
+flowsheet11$DEX_実投与回数_percent <- Chemical_Deviation(2, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
                                                     flowsheet11$DEX実投与日数.5日, flowsheet11$DEX減量.mg.)
-flowsheet11$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
+flowsheet11$DEX_総投与量_percent <- Chemical_Deviation(3, flowsheet11$Body_Surface_Area, 20, 5, flowsheet11$DEX実投与量.mg..日,
                                                    flowsheet11$DEX実投与日数.5日, flowsheet11$DEX減量.mg.)
 ## VDS
 flowsheet11$VDS_max5.0mg <- ifelse(flowsheet11$VDS実投与量.mg..回 > 5.0, flowsheet11$VDS実投与量.mg..回, NA)
@@ -310,11 +310,11 @@ flowsheet11$DNR_総投与量_percent <- Chemical_Deviation(3, flowsheet11$Body_S
 # flowsheet12
 flowsheet12$Body_Surface_Area <- Body_Surface_Area(flowsheet12$身長.cm., flowsheet12$体重.kg.)
 ## DEX
-flowsheet12$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
+flowsheet12$DEX_実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
                                                    flowsheet12$DEX実投与日数.5日, flowsheet12$DEX減量.mg.)
-flowsheet12$VCR_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
+flowsheet12$DEX_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
                                                     flowsheet12$DEX実投与日数.5日, flowsheet12$DEX減量.mg.)
-flowsheet12$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
+flowsheet12$DEX_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 20, 5, flowsheet12$DEX実投与量.mg..日,
                                                    flowsheet12$DEX実投与日数.5日, flowsheet12$DEX減量.mg.)
 ## VCR
 flowsheet12$VCR_max2.0mg <- ifelse(flowsheet12$VCR実投与量.mg..回 > 2.0, flowsheet12$VCR実投与量.mg..回, NA)
@@ -339,14 +339,14 @@ flowsheet12$CPA_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Bod
 flowsheet12$CPA_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 200, 5, flowsheet12$CPA実投与量.mg..回,
                                                    flowsheet12$CPA実投与回数.5回, flowsheet12$CPA減量.mg.)
 ## HD.Ara.C
-flowsheet12$HD.Ara.C実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+flowsheet12$HD.Ara.C実投与量_percent <- Chemical_Deviation(1, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$HD.Ara.C実投与量.mg..回,
                                                    flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
-flowsheet12$HD.Ara.C_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+flowsheet12$HD.Ara.C_実投与回数_percent <- Chemical_Deviation(2, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$HD.Ara.C実投与量.mg..回,
                                                          flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
-flowsheet12$HD.Ara.C_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$LV実投与量.mg..回,
+flowsheet12$HD.Ara.C_総投与量_percent <- Chemical_Deviation(3, flowsheet12$Body_Surface_Area, 2000, 2, flowsheet12$HD.Ara.C実投与量.mg..回,
                                                         flowsheet12$HD.Ara.C実投与回数.2回, flowsheet12$HD.Ara.C減量.mg.)
 ## L.ASP(flowsheet10-12)
-names(flowsheet10)[46] <- "L.ASP減量.U."
+names(flowsheet10)[51] <- "L.ASP減量.U."
 for(i in 10:12){
   eval(parse(text = paste0("flowsheet", i,
                         "$L.ASP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 25000, 2, flowsheet", i,
@@ -487,7 +487,6 @@ for(i in c(1, 3:20)){
 }
 
 # Output 
-dir.create("../output/review")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', row.names = F)")))}

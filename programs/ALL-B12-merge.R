@@ -32,23 +32,16 @@ MakeDataSet <- function(dataframe){
 }　 
 # mergeせず、列抽出のみの関数
 MakeDataSet_1 <- function(dataframe){
-  if(flg == 1){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
-    datecut_df[, c(1:11, seq(12, length(colnames(datecut_df)), by = 2)) ] 
-  }else{
-    datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
-    datecut_df[is.na(datecut_df)] <- ""
-    datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
-               c(1:11, seq(12, length(colnames(datecut_df)), by = 2)) ] 
-  }
+    datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ] 
 }  
 
 # #### 設定 ######################
 # # output,rawdataはaronas上にて入出力する
 # prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/precleaning"
 # # 締め切り日、ダウンロード日の
-# flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+# flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 # kDateShimekiri_start <- "20170601"  # flg==2の時に設定
 # kDateShimekiri <- "20171130"
 # kDownLoadDate <- "_171116_1434"
@@ -97,6 +90,7 @@ cancel2_df <- MakeDataSet_1(cancel2)
 write.csv(cancel2_df, "../output/cancel2.csv" , row.names =  F)
 
 # riskをすべてマージしたシートを作成
+dir.create("../output/review")
 colnames(risk1_df) <- paste0("risk1_", colnames(risk1_df))
 colnames(risk2_df) <- paste0("risk2_", colnames(risk2_df))
 colnames(risk3_df) <- paste0("risk3_", colnames(risk3_df))
@@ -104,19 +98,21 @@ colnames(cancel_df) <- paste0("cancel_", colnames(cancel_df))
 merge_1 <- merge(risk1_df, risk2_df, by.x = "risk1_症例登録番号",  by.y = "risk2_症例登録番号",  all = T)
 merge_2 <- merge(merge_1, risk3_df, by.x = "risk1_症例登録番号",  by.y = "risk3_症例登録番号", all = T)
 risk_result <- merge(merge_2, cancel_df, by.x = "risk1_症例登録番号",  by.y = "cancel_症例登録番号", all = T)
+dxt_allocation <- base_df[, c(1, 7:11)]
 colnames(risk_result)[1] <- "症例登録番号"
-risk_result[is.na(risk_result)] <- ""
-write.csv(risk_result, "../output/risk_allSheet.csv" , row.names =  F)
-
-
+all_risk <- merge(dxt_allocation, risk_result, by = "症例登録番号", all = T)
+all_risk[is.na(all_risk)] <- ""
+write.csv(all_risk, "../output/review/risk_allSheet.csv" , row.names =  F)
 
 datecut_df <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, ]
-result <- datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(32, length(colnames(registration)), by = 2)) ] 
+result <- datecut_df[, c(1:11,seq(13,length(colnames(datecut_df)), by = 2)) ] 
 write.csv(result, "../output/registration.csv", row.names =  F)
+write.csv(result, "../output/review/registration.csv", row.names =  F)
 
 datecut_df <- initial[format(as.Date(initial$作成日), "%Y%m%d") <= kDateShimekiri, ]
-initial_df <- datecut_df[, c(2, 4:6, 8, 11, 13, 15, 18, seq(30, length(colnames(initial)), by = 2)) ] 
-dxt.flowsheet1 <- flowsheet1[, c(18,32)]
+initial_df <- datecut_df[, c(1:11, seq(15, length(colnames(initial)), by = 2)) ] 
+dxt.flowsheet1 <- flowsheet1[, c(9, 17)]
 colnames(dxt.flowsheet1)[2] <- "flowsheet1_治療開始日"
 result <- merge(dxt.flowsheet1, initial_df, by = "症例登録番号", all.y = T)
 write.csv(result, "../output/initial.csv", row.names =  F)
+write.csv(result, "../output/review/initial.csv", row.names =  F)

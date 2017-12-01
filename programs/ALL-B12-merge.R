@@ -56,7 +56,7 @@ for (i in 1:length(list)) {
    assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
 }
 # JPLSG_registrationを単独でよみこむ
-jp <- read.csv(paste0(prtpath, "/", kJplsg), as.is=T, na.strings = c(""))
+jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""))
 dxt_bd <- jp[, c(8, 37)]
 
 # リスク、中止などの情報を含んだ基本的なデータセットの作成

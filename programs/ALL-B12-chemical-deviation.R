@@ -185,11 +185,11 @@ flowsheet6$X6.MP_総投与量_percent <- Chemical_Deviation(3, flowsheet6$Body_S
                                                     flowsheet6$X6.MP実投与日数.56日, flowsheet6$X6.MP減量.mg.)
 ## HD-MTX
 flowsheet6$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet6$Body_Surface_Area, 2, 4, flowsheet6$HD.MTX実投与量.g..回,
-                                                          flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 6.5)
+                                                          flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 3.5)
 flowsheet6$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet6$Body_Surface_Area, 2, 4, flowsheet6$HD.MTX実投与量.g..回,
-                                                           flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 6.5)
+                                                           flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 3.5)
 flowsheet6$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet6$Body_Surface_Area, 2, 4, flowsheet6$HD.MTX実投与量.g..回,
-                                                          flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 6.5)
+                                                          flowsheet6$HD.MTX実投与回数.4回, flowsheet6$HD.MTX減量.g., flowsheet6$ダウン症である, 3.5)
 
 # flowsheet7～9
 ## 6MP
@@ -210,13 +210,13 @@ for(i in 7:9){
 for(i in 7:9){ 
   eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet", i, 
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
-                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 15.5)")))
+                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
   eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet", i, 
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
-                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 15.5)")))
+                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
   eval(parse(text = paste0("flowsheet", i, "$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet", i, 
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
-                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 15.5)")))
+                           "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
 }
 ## L-ASP(flowsheet8,9のみ)
 ## L.ASP
@@ -487,6 +487,7 @@ for(i in c(1, 3:20)){
 }
 
 # Output 
+dir.create("../output/review")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', row.names = F)")))}

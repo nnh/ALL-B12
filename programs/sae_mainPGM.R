@@ -2,14 +2,17 @@
 #作成者：Mamiko Yonejima
 #作成日：2017/09/08
 #ver.3.0
-########################################
-##読み込みファイル名の定義
-in_sae<- "ALL-B12_sae_report_170821_1241.csv"
-#締切日の設定
-DayCutOff  <-  "2017/05/31"   
-#日付はyyyy/mm/ddで設定する
+#*******************************************
+## 読み込みファイル名の定義
+path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R"
+# in_sae_1：締め切り日直後のDLdataの保管場所とファイル名
+path_sae_1 <- "/precleaning/rawdata/ALL-B12_sae_report_171116_1434.csv"
+# in_sae_2：定モニ用のDLdataの保管場所とファイル名
+path_sae_2 <- "/cleaning/rawdata/ALL-B12_sae_report_171201_0903.csv"
+
 #出力日設定
-Date_output  <- "20170908"
+path_output <- "/precleaning/output/"
+Date_output  <- "201712221"
 #########################################
 
 #出力ファイルの定義
@@ -44,10 +47,20 @@ AEENDTC <- "転帰確認日"
 AETOXGR <- "grade"
 AEOUT <- "報告時の転帰"
 # CTCAEファイルの読み込み
-ctcae <- read.csv("../input/CTCAEv4.0.csv", as.is=T)
+ctcae <- read.csv(paste0(path, "./input/CTCAEv4.0.csv"), as.is=T)
 # SAE報告書の読み込み
-source("../programs/sae_mainPGM-config.R", encoding = "UTF-8")
-sae <- read.csv(paste0("./4_final/rawdata/", in_sae), as.is = T, na.strings = "" )
+sae_1 <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
+sae_2 <- read.csv(paste0(path, path_sae_2), as.is = T, na.strings = "" )
+
+# 第一回目のDLデータ時点のデータから、作成日、症例番号、最終報告の列をとる
+dxt_sae_1 <- sae_1[, c(DayCutoff, USUBJID, "報告番号", LastReport)]
+dxt_sae_1$key <- paste0(dxt_sae_1$症例登録番号, "_", dxt_sae_1$報告番号)
+colnames(dxt_sae_1) <- paste0("sae.1.", colnames(dxt_sae_1))
+
+# 定モニ用データとマージ
+sae_2$key <- paste0(sae_2$症例登録番号, "_", sae_2$報告番号)
+sae <- merge(dxt_sae_1, sae_2, by.x = "sae.1.key", by.y = "key",  all = T)
+
 #SAE報告書のMedDRA codeとgradeを分割する
 sae$MedDRAcode <- sub("-.*", "", sae$有害事象名)
 sae$grade <- sub("^.*.-", "", sae$有害事象名)
@@ -55,40 +68,33 @@ sae$grade <- sub("^.*.-", "", sae$有害事象名)
 # マージする
 saeCTCAE <- merge(sae,ctcae,by.x="MedDRAcode",by.y="CTCAE.v4.0..MedDRA..v12.0.Code",all.x=T)
 
-# 締日以降のデータを削除
-saeCTCAE$作成日 <- as.Date(as.character(saeCTCAE$作成日), format = "%Y/%m/%d")
-saecut <- saeCTCAE[saeCTCAE$作成日 <= DayCutOff | saeCTCAE$作成日 > DayCutOff & saeCTCAE$field296 == 4 | saeCTCAE$作成日 > DayCutOff & saeCTCAE$field296 == 7, ]
 # 報告分類で分ける
 ## 通常報告「field296」が「3：(3)通常報告（15日以内に報告)」と「4：(5)追加報告（通常報告後）」のデータを抽出
-subnomal <- subset(saecut, field296=="3" | field296=="4")　#field番号の確認を！
+subnomal <- subset(saeCTCAE, field296=="3" | field296=="4")　#field番号の確認を！
 # 必要項目を抽出
 nomalbase <- subnomal[,c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport,
                          NomalReport,Others,StudyCourse,StudyProgress,AETERM,AETOXGR,
                          Content,CausalityTherapy,CausalityMed, CausalityOthers, 
-                         CausalityOption, AEOUT, AEENDTC, LastReport)]
+                         CausalityOption, AEOUT, AEENDTC, LastReport, "sae.1.作成日", "sae.1.最終報告")]
 
-names(nomalbase)
 names(nomalbase)[4] <- c("施設名" )
 names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
                             "発生時期:治療コース名",  "発生時期:コース内" )
 names(nomalbase)[12] <- c("有害事象名")
 names(nomalbase)[15] <- c("因果関係(原因と考えられる治療法)")
 
-# 最終報告がTRUEのデータを抽出
-nomaltrue <- subset(nomalbase, 最終報告==TRUE)
 
 #有害事象報告日でソートする
-sortlist <- order(nomaltrue$有害事象報告日) 
-nomaltrue <- nomaltrue[sortlist, ]
+sortlist <- order(nomalbase$有害事象報告日) 
+nomaltrue <- nomalbase[sortlist, ]
 nomaltrue[is.na(nomaltrue)] <- ""
 ##緊急報告                 
-subemergency <- subset(saecut, field296=="1"|field296=="2"|field296=="7")
+subemergency <- subset(saeCTCAE, field296=="1"|field296=="2"|field296=="7")
 #必要項目を抽出
-
 emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport, 
                                   EmergencyReport1, EmergencyReport2, Others, StudyCourse, StudyProgress, 
                                   AETERM, AETOXGR, Content, CausalityTherapy, CausalityMed, CausalityOthers, 
-                                  CausalityOption, AEOUT, AEENDTC, LastReport)]
+                                  CausalityOption, AEOUT, AEENDTC, LastReport, "sae.1.作成日", "sae.1.最終報告")]
 
 names(emergencybase)
 names(emergencybase)[4] <- c("施設名" )
@@ -98,20 +104,18 @@ names(emergencybase)[8:12] <- c("(1)緊急一次報告(72時間以内に報告)"
 names(emergencybase)[16] <- c("因果関係(原因と考えられる治療法)")
 names(emergencybase)[13] <- c("有害事象名")
 
-#最終報告がTRUEのデータを抽出
-emergencytrue <- subset(emergencybase, 最終報告==TRUE)
 
 #有害事象報告日でソートする
-sortlist <- order(emergencytrue$有害事象報告日) 
-emergencytrue <- emergencytrue[sortlist, ]
+sortlist <- order(emergencybase$有害事象報告日) 
+emergencytrue <- emergencybase[sortlist, ]
 emergencytrue[is.na(emergencytrue)] <- ""
 # 
 # #ファイルの出力
 # PathOut <- setwd("../output")   #ディレクトリの変更
 
 #通常報告
-write.csv(nomaltrue, paste0("./4_final/output/", OutputFile1), row.names=F)
+write.csv(nomaltrue, paste0(path, path_output, OutputFile1), row.names=F)
 
 #緊急報告
-write.csv(emergencytrue,  paste0("./4_final/output/",  OutputFile2), row.names=F)
+write.csv(emergencytrue,  paste0(path, path_output, OutputFile2), row.names=F)
 

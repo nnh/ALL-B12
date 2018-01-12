@@ -11,9 +11,9 @@ Dxt <- function(flowsheet){
 }
 
 ## Config #####
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/cleaning"
-kDownLoadDate <- "_171201_0903"
-kDev <- "ALL-B12_deviations_171201_0910.csv"
+prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/CRFreview"
+kDownLoadDate <- "_180109_0955"
+kDev <- "ALL-B12_deviations_180109_1011.csv"
 ###############
 # Read csv
 list <- list.files(paste0(prtpath, "./rawdata"))
@@ -23,7 +23,7 @@ setwd(paste0(prtpath, "./rawdata"))
 for (i in 1:length(list)) {
   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
 }
-setwd(paste0(prtpath, "./dev/rawdata"))
+# setwd(paste0(prtpath, "./dev/rawdata"))
 deviations0 <- read.csv(kDev, as.is=T, na.strings = c(""))
 
 # inputの読み込み

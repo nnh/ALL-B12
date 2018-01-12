@@ -58,13 +58,13 @@ Deviation <- function(flowsheet) {
 }
 ## Config #####
 # output,rawdataはaronas上にて入出力する
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/cleaning"
+prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/CRFreview"
 # 締め切り日、ダウンロード日の
 flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20170601"  # flg==2の時に設定
 kDateShimekiri <- "20171130"
-kDownLoadDate <- "_171201_0903"
-kJplsg <- "JPLSG_registration_171201_0857.csv"
+kDownLoadDate <- "_180109_0955"
+kJplsg <- "JPLSG_registration_180104_0947.csv"
 
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 
@@ -487,7 +487,7 @@ for(i in c(1, 3:20)){
 }
 
 # Output 
-dir.create("../output/review")
+# dir.create("../output/review")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', row.names = F)")))}
@@ -503,3 +503,4 @@ dir.create("../output/deviation")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet_chemical_dev", i, "[is.na(flowsheet_chemical_dev", i, ")] <- ''")))
   eval(parse(text = paste0("write.csv(flowsheet_chemical_dev", i, ",'../output/deviation/flowsheet", i, "_chemical_dev.csv', row.names = F)")))}
+

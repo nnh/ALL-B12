@@ -60,8 +60,8 @@ jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c("")
 dxt_bd <- jp[, c(8, 37)]
 
 # リスク、中止などの情報を含んだ基本的なデータセットの作成
-cutdate_registration <- registration[format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(1, 8, 9)]
-cutdate_risk1 <- risk1[format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(9, 63, 65)]
+cutdate_registration <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, c(1, 8, 9)]
+cutdate_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c(9, 63, 65)]
 cutdate_risk2 <- risk2 [format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c(9, 45)]
 cutdate_cancel  <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c(9, 13, 17, 25, 26, 27, 37)]
 cutdate_cancel2  <- cancel2[format(as.Date(cancel2$作成日), "%Y%m%d") <= kDateShimekiri, c(9, 17:19)]

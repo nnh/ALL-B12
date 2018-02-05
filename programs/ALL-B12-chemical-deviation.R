@@ -5,7 +5,7 @@
 #関数の設定
 # 体表面積計算
 Body_Surface_Area <- function(high, weight){
-  floor(sqrt(high* weight / 3600)*10^(2-1)+0.5)/10^(2-1)
+  floor(sqrt(high* weight / 3600)*10^(3-1)+0.5)/10^(3-1)
 }
 # 薬剤逸脱 
 # flg == 1 一回投与量の逸脱、 flg == 2 投与回数の逸脱、 flg == 3 総投与量の逸脱

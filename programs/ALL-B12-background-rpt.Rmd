@@ -65,5 +65,9 @@ xtabs( ~  +  PSL反応性評価, data = cns)
 ## HR因子:染色体本数(G-band)
 ```{r, echo=F}
 xtabs( ~  +  HR因子.染色体本数.G.band., data = cns)
-
+```
+## PSL反応性とキメラ遺伝子スクリーニング
+```{r, echo=F}
+xtabs( ~  HR因子.染色体本数.G.band. + PSL反応性評価, data = cns)
+```
 

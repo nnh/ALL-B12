@@ -50,7 +50,8 @@ df_3$risk1_status <- ifelse(is.na(df_3$初発時CNS浸潤.), "未提出", "提�
 
 # 中止届を締め切り日でカット、必要項目抽出、マージ
 date_cut_cancel <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "field10", "治療終了.中止.理由")]
-ads <- merge(df_3, date_cut_cancel, by = "症例登録番号", all.x = T)
+df_4 <- merge(df_3, date_cut_cancel, by = "症例登録番号", all.x = T)
+ads <- df_4[df_4$field10 != 4 & df_4$field10 != 3, ]
 
 # 中止症例の詳細
 dxt_cancel_0 <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") >= kDateShimekiri_srt & cancel$終了種別 == "中止", ]

@@ -1,7 +1,6 @@
 ---
 title: "ALL-B12　背景因子"
 author: "Mamiko Yonejima"
-date: "2018年2月8日"
 output:
   word_document: default
   pdf_document:
@@ -19,14 +18,15 @@ source("ALL-B12_monitoring-report.R",  encoding = "UTF-8")
 
 ## 全登録数
 ```{r, echo=F}
-length(ads$症例登録番号)
+length(registration$症例登録番号)
 ```
 ## 事後不適格例数
 ```{r, echo=F}
-length(ads[c(ads$field10 == 3 | ads$field10 == 4), ])
+nrow(ads_cancel)
+``` 
 ## 適格例数
 ```{r, echo=F}
-length(ads$症例登録番号) - length(ads[c(ads$field10 == 3 | ads$field10 == 4), ])
+length(ads$症例登録番号)
 ```
 ## 診断時年齢
 ```{r, echo=F}

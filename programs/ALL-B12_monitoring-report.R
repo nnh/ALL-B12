@@ -59,14 +59,16 @@ dxt_cancel <- dxt_cancel_0[format(as.Date(dxt_cancel_0$作成日), "%Y%m%d") <= 
                          c("症例登録番号", "シート作成時施設名", "治療中止日", "中止時期.コース名.", "中止時期.day.week.", "中止時期.日数.週数.",
                            "中止判明日", "中止判明時期.コース名.", "中止判明時期.day.week.", "中止判明時期.day.week.", "field10", "治療終了.中止.理由", 
                            "有害事象詳細", "症例登録後.診断違い以外の不適格性が判明した場合の詳細", "有害事象や治療効果不十分以外の理由で.患者本人ないしは代諾者から中止の申し出があった場合の詳細",
-                           "有害事象や治療効果不十分以外の理由で.担当医により中止が必要と判断された場合の詳細")]
+                           "有害事象や治療効果不十分以外の理由で.担当医により中止が必要と判断された場合の詳細", "血液疾患名選択")]
 dxt_reg_date <- registration[, c("症例登録番号","症例登録日")]
 
 cancel_ds <- merge(dxt_cancel, dxt_reg_date, by = "症例登録番号", all.x = T)
 cancel_ds$詳細 <- ifelse(cancel_ds$field10 == 14,  cancel_ds$有害事象詳細,
+                  ifelse(cancel_ds$field10 == 3,  cancel_ds$血液疾患名選択,
                   ifelse(cancel_ds$field10 == 4, cancel_ds$症例登録後.診断違い以外の不適格性が判明した場合の詳細,
                   ifelse(cancel_ds$field10 == 10,  cancel_ds$有害事象や治療効果不十分以外の理由で.患者本人ないしは代諾者から中止の申し出があった場合の詳細,
-                  ifelse(cancel_ds$field10 == 11, cancel_ds$有害事象や治療効果不十分以外の理由で.担当医により中止が必要と判断された場合の詳細, "-" ))))
+                  ifelse(cancel_ds$field10 == 11, cancel_ds$有害事象や治療効果不十分以外の理由で.担当医により中止が必要と判断された場合の詳細, "-" )))))
+cancel_ds <- cancel_ds[, c(1, 2, 18, 3:10, 12, 19)]
 cancel_ds[is.na(cancel_ds)] <- "-"
 
 write.csv(cancel_ds, paste0(prtpath, "./output/cancel.csv"), row.names =  F)

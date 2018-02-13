@@ -48,10 +48,14 @@ date_cut_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShime
 df_3 <- merge(df_2, date_cut_risk1, by = "症例登録番号", all.x = T)
 df_3$risk1_status <- ifelse(is.na(df_3$初発時CNS浸潤.), "未提出", "提出")
 
+
 # 中止届を締め切り日でカット、必要項目抽出、マージ
 date_cut_cancel <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "field10", "治療終了.中止.理由")]
 df_4 <- merge(df_3, date_cut_cancel, by = "症例登録番号", all.x = T)
-ads <- df_4[df_4$field10 != 4 & df_4$field10 != 3, ]
+df_5 <-  subset(df_4, df_4$field10 != 3)
+df_6 <-  subset(df_5, df_5$field10 != 4 )
+df_7 <- subset(df_4, is.na(df_4$field10))
+ads <- rbind(df_6, df_7)
 ads_cancel <- df_4[!is.na(df_4$field10) & (df_4$field10 == 4 | df_4$field10 == 3 ), ]
 
 # 中止症例の詳細
@@ -73,8 +77,8 @@ cancel_ds <- cancel_ds[, c(1, 2, 18, 3:10, 12, 19)]
 cancel_ds[is.na(cancel_ds)] <- "-"
 
 write.csv(cancel_ds, paste0(prtpath, "./output/cancel.csv"), row.names =  F)
-
-
-
+ads[is.na(ads)] <- ""
+write.csv(ads, paste0(prtpath, "./output/background_ads.csv"), row.names =  F)
+write.csv(ads_cancel, paste0(prtpath, "./output/background_ads_cancel.csv"), row.names =  F)
 
 

@@ -6,13 +6,13 @@
 ## 読み込みファイル名の定義
 path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R"
 # in_sae_1：締め切り日直後のDLdataの保管場所とファイル名
-path_sae_1 <- "/precleaning/rawdata/ALL-B12_sae_report_171116_1434.csv"
+path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_171201_0903.csv"
 # in_sae_2：定モニ用のDLdataの保管場所とファイル名
-path_sae_2 <- "/cleaning/rawdata/ALL-B12_sae_report_171201_0903.csv"
+path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180209_1234.csv"
 
 #出力日設定
-path_output <- "/precleaning/output/"
-Date_output  <- "201712221"
+path_output <- "/report/output/"
+Date_output  <- "20180215"
 #########################################
 
 #出力ファイルの定義
@@ -47,7 +47,7 @@ AEENDTC <- "転帰確認日"
 AETOXGR <- "grade"
 AEOUT <- "報告時の転帰"
 # CTCAEファイルの読み込み
-ctcae <- read.csv(paste0(path, "./input/CTCAEv4.0.csv"), as.is=T)
+ctcae <- read.csv(paste0(path, "./report/input/CTCAEv4.0.csv"), as.is=T)
 # SAE報告書の読み込み
 sae_1 <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
 sae_2 <- read.csv(paste0(path, path_sae_2), as.is = T, na.strings = "" )

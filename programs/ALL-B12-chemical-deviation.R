@@ -56,16 +56,16 @@ Deviation <- function(flowsheet) {
   dxt_flowsheet <- flowsheet[, 1:26]
   merge(dxt_flowsheet, dxt_div, by="row.names",  all.y = T)
 }
-## Config #####
+#----- Config -----------------------------------------------------------------------------------------------------
 # output,rawdataはaronas上にて入出力する
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/CRFreview"
+prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/11.03.03 中間解析用生データ/登録終了後_2018/data_cleaning/201804"
 # 締め切り日、ダウンロード日の
-flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20170601"  # flg==2の時に設定
-kDateShimekiri <- "20171130"
-kDownLoadDate <- "_180109_0955"
-kJplsg <- "JPLSG_registration_180104_0947.csv"
-
+kDateShimekiri <- "20180415"
+kDownLoadDate <- "_180413_1532"
+kJplsg <- "JPLSG_registration_180413_1000.csv"
+#-------------------------------------------------------------------------------------------------------------------
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 
 # ALL-B12-merge.Rで作成されたflowsheet～を読み込む

@@ -11,9 +11,9 @@ Dxt <- function(flowsheet){
 }
 
 ## Config #####
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/CRFreview"
-kDownLoadDate <- "_180109_0955"
-kDev <- "ALL-B12_deviations_180109_1011.csv"
+prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/cleaning"
+kDownLoadDate <- "_180601_1009"  # フローシートのダウンロード日
+kDev <- "ALL-B12_deviations_180601_1209.csv"
 ###############
 # Read csv
 list <- list.files(paste0(prtpath, "./rawdata"))

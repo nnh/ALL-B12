@@ -58,13 +58,13 @@ Deviation <- function(flowsheet) {
 }
 ## Config #####
 # output,rawdataはaronas上にて入出力する
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R/CRFreview"
+prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/cleaning"
 # 締め切り日、ダウンロード日の
 flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
-kDateShimekiri_start <- "20170601"  # flg==2の時に設定
-kDateShimekiri <- "20171130"
-kDownLoadDate <- "_180109_0955"
-kJplsg <- "JPLSG_registration_180104_0947.csv"
+kDateShimekiri_start <- "20171201"  # flg==2の時に設定
+kDateShimekiri <- "20180531"  # 締日
+kDownLoadDate <- "_180601_1009"
+kJplsg <- "JPLSG_registration_180601_1018.csv"
 
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 

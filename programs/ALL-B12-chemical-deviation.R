@@ -7,9 +7,9 @@
 Body_Surface_Area <- function(high, weight){
   floor(sqrt(high* weight / 3600)*10^(3-1)+0.5)/10^(3-1)
 }
-# 薬剤逸脱 
+# 薬剤逸脱
 # flg == 1 一回投与量の逸脱、 flg == 2 投与回数の逸脱、 flg == 3 総投与量の逸脱
-# bsa(body surface area), difine_dose1(規定一回投与量), difine_dose2(規定投与回数), 
+# bsa(body surface area), difine_dose1(規定一回投与量), difine_dose2(規定投与回数),
 # actual_dose1(実投与量), actual_dose2(実投与回数), weight_loss(減量)
 Chemical_Deviation <- function(flg, bsa, difine_dose1, difine_dose2, actual_dose1, actual_dose2, weight_loss){
   dd <- bsa* difine_dose1
@@ -26,7 +26,7 @@ Chemical_Deviation <- function(flg, bsa, difine_dose1, difine_dose2, actual_dose
     ifelse(td_percent < 50 | td_percent >= 150,  td_percent, NA)
   }
 }
-# 薬剤逸脱 HD-MTX　Protocol M-Down  
+# 薬剤逸脱 HD-MTX　Protocol M-Down
 # difine_total_d:M2:6.5, M5:15.5,HR2,HR2:0.5
 Chemical_Deviation_Down <- function(flg, bsa, difine_dose1, difine_dose2, actual_dose1, actual_dose2, weight_loss, down, difine_total_d){
   dd <- bsa* difine_dose1
@@ -41,8 +41,8 @@ Chemical_Deviation_Down <- function(flg, bsa, difine_dose1, difine_dose2, actual
   } else {
     total_dose <- ifelse(is.na(weight_loss), actual_dose1 * actual_dose2,
                          actual_dose1 * actual_dose2 - weight_loss)
-    td_percent <- ifelse(is.na(down), NA, 
-                         ifelse(down == "はい", floor(total_dose / (bsa* difine_total_d) * 100 + 0.5), 
+    td_percent <- ifelse(is.na(down), NA,
+                         ifelse(down == "はい", floor(total_dose / (bsa* difine_total_d) * 100 + 0.5),
                                 floor(total_dose / (dd* difine_dose2) * 100 + 0.5)))
     ifelse(td_percent < 50 | td_percent >= 150,  td_percent, NA)
   }
@@ -58,20 +58,20 @@ Deviation <- function(flowsheet) {
 }
 ## Config #####
 # output,rawdataはaronas上にて入出力する
-prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/cleaning"
+prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/CRFreview"
 # 締め切り日、ダウンロード日の
 flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "20171201"  # flg==2の時に設定
 kDateShimekiri <- "20180531"  # 締日
-kDownLoadDate <- "_180601_1009"
-kJplsg <- "JPLSG_registration_180601_1018.csv"
+kDownLoadDate <- "_180702_1146"
+kJplsg <- "JPLSG_registration_180702_1155.csv"
 
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 
 # ALL-B12-merge.Rで作成されたflowsheet～を読み込む
 list <- list.files(paste0(prtpath, "./output"), pattern = "flowsheet")
 file.name <- sub(".csv.*", "", list)
-setwd(paste0(prtpath,"./output")) # TODO yonejima 
+setwd(paste0(prtpath,"./output")) # TODO yonejima
 for (i in 1:length(list)) {
   assign(file.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
 }
@@ -89,20 +89,20 @@ flowsheet1$VCR_実投与回数_percent <- Chemical_Deviation(2, flowsheet1$Body_
 flowsheet1$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet1$Body_Surface_Area, 1.5, 4, flowsheet1$VCR実投与量.mg..回,
                                                   flowsheet1$VCR実投与回数.4回, flowsheet1$VCR減量.mg.)
 ## PSL
-flowsheet1$IA_PSL_総投与量_percent <- ifelse(flowsheet1$PSL総実投与量.mg./(flowsheet1$Body_Surface_Area * 60 * 20) < 0.5 | flowsheet1$PSL総実投与量.mg. / (flowsheet1$Body_Surface_Area * 60 * 20) >= 1.5, 
+flowsheet1$IA_PSL_総投与量_percent <- ifelse(flowsheet1$PSL総実投与量.mg./(flowsheet1$Body_Surface_Area * 60 * 20) < 0.5 | flowsheet1$PSL総実投与量.mg. / (flowsheet1$Body_Surface_Area * 60 * 20) >= 1.5,
                                          floor(flowsheet1$PSL総実投与量.mg. / (flowsheet1$Body_Surface_Area * 60 * 20) *100 + 0.5), NA)
 ## DNR ##TODOロジック確認
-flowsheet1$DNR_実投与量_percent <- Chemical_Deviation(1,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回, 
+flowsheet1$DNR_実投与量_percent <- Chemical_Deviation(1,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回,
                                                   flowsheet1$DNR実投与回数.SR2回.IR.HR4回, flowsheet1$DNR減量.mg.)
 flowsheet1$DNR_実投与回数_percent <- ifelse(flowsheet1$暫定リスク判定結果 == "標準危険群(SR)",
-                                       Chemical_Deviation(2,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回, 
+                                       Chemical_Deviation(2,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回,
                                                           flowsheet1$DNR実投与回数.SR2回.IR.HR4回, flowsheet1$DNR減量.mg.),
-                                       Chemical_Deviation(2,flowsheet1$Body_Surface_Area, 30, 4, flowsheet1$DNR実投与量.mg..回, 
+                                       Chemical_Deviation(2,flowsheet1$Body_Surface_Area, 30, 4, flowsheet1$DNR実投与量.mg..回,
                                                           flowsheet1$DNR実投与回数.SR2回.IR.HR4回, flowsheet1$DNR減量.mg.))
 flowsheet1$DNR_総投与量_percent <- ifelse(flowsheet1$暫定リスク判定結果 == "標準危険群(SR)",
-                                      Chemical_Deviation(3,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回, 
+                                      Chemical_Deviation(3,flowsheet1$Body_Surface_Area, 30, 2, flowsheet1$DNR実投与量.mg..回,
                                                          flowsheet1$DNR実投与回数.SR2回.IR.HR4回, flowsheet1$DNR減量.mg.),
-                                      Chemical_Deviation(3,flowsheet1$Body_Surface_Area, 30, 4, flowsheet1$DNR実投与量.mg..回, 
+                                      Chemical_Deviation(3,flowsheet1$Body_Surface_Area, 30, 4, flowsheet1$DNR実投与量.mg..回,
                                                          flowsheet1$DNR実投与回数.SR2回.IR.HR4回, flowsheet1$DNR減量.mg.))
 ## L-ASP
 flowsheet1$L.ASP_実投与量_percent <- Chemical_Deviation(1,flowsheet1$Body_Surface_Area, 5000, 8, flowsheet1$L.ASP実投与量.U..回,
@@ -115,7 +115,7 @@ flowsheet1$L.ASP_総投与量_percent <- Chemical_Deviation(3,flowsheet1$Body_Su
 # flowsheet3-5
 ## CPA
 for(i in 3:5){
-  eval(parse(text = paste0("flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i,
                            "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$CPA_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, "$Body_Surface_Area, 1000, 2, flowsheet", i,
@@ -165,7 +165,7 @@ for(i in 4:5){
                            "$L.ASP実投与量.U..回, flowsheet", i, "$L.ASP実投与回数.8回, flowsheet", i, "$L.ASP減量.U.)")))
 }
 
-## VCR  
+## VCR
 flowsheet5$VCR_max2.0mg <- ifelse(flowsheet5$VCR実投与量.mg..回 > 2.0, flowsheet5$VCR実投与量.mg..回, NA)
 flowsheet5$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet5$Body_Surface_Area, 1.5, 2, flowsheet5$VCR実投与量.mg..回,
                                                   flowsheet5$VCR実投与回数.2回, flowsheet5$VCR減量.mg.)
@@ -194,27 +194,27 @@ flowsheet6$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet6$
 # flowsheet7～9
 ## 6MP
 for(i in 7:9){
-  eval(parse(text = paste0("flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i,
                            "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$X6.MP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$X6.MP_実投与量_percent <- Chemical_Deviation(1, flowsheet", i,
                            "$Body_Surface_Area, 25, 56, flowsheet", i, "$X6.MP実投与量.mg..日, flowsheet",i,
                            "$X6.MP実投与日数.56日, flowsheet", i, "$X6.MP減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$X6.MP_実投与回数 <- Chemical_Deviation(2, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$X6.MP_実投与回数 <- Chemical_Deviation(2, flowsheet", i,
                            "$Body_Surface_Area, 25, 56, flowsheet", i, "$X6.MP実投与量.mg..日, flowsheet",i,
                            "$X6.MP実投与日数.56日, flowsheet", i, "$X6.MP減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$X6.MP_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$X6.MP_総投与量_percent <- Chemical_Deviation(3, flowsheet", i,
                            "$Body_Surface_Area, 25, 56, flowsheet", i, "$X6.MP実投与量.mg..日, flowsheet",i,
                            "$X6.MP実投与日数.56日, flowsheet", i, "$X6.MP減量.mg.)")))
 }
 ## HD-MTX
-for(i in 7:9){ 
-  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet", i, 
+for(i in 7:9){
+  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与量_percent <- Chemical_Deviation_Down(1, flowsheet", i,
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
                            "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
-  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_実投与回数_percent <- Chemical_Deviation_Down(2, flowsheet", i,
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
                            "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
-  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$HD.MTX_総投与量_percent <- Chemical_Deviation_Down(3, flowsheet", i,
                            "$Body_Surface_Area, 5, 4, flowsheet", i, "$HD.MTX実投与量.g..回, flowsheet",i,
                            "$HD.MTX実投与回数.4回, flowsheet", i, "$HD.MTX減量.g., flowsheet", i, "$ダウン症である, 3.5)")))
 }
@@ -361,34 +361,34 @@ for(i in 10:12){
 # flowsheet13-20
 ## VCR
 for(i in 13:17){
-  eval(parse(text = paste0("flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i,
                            "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$VCR_max2.0mg <- ifelse(flowsheet", i, "$VCR実投与量.mg..回 > 2.0, flowsheet", i,
                            "$VCR実投与量.mg..回, NA)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 2, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.2回, flowsheet", i, "$VCR減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与回数 <- Chemical_Deviation(2, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与回数 <- Chemical_Deviation(2, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 2, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.2回, flowsheet", i, "$VCR減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 2, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.2回, flowsheet", i, "$VCR減量.mg.)")))
 }
 for(i in 18:20){
-  eval(parse(text = paste0("flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i,
                            "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))
   eval(parse(text = paste0("flowsheet", i,
                            "$VCR_max2.0mg <- ifelse(flowsheet", i, "$VCR実投与量.mg..回 > 2.0, flowsheet", i,
                            "$VCR実投与量.mg..回, NA)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与量_percent <- Chemical_Deviation(1, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 4, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.4回, flowsheet", i, "$VCR減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与回数 <- Chemical_Deviation(2, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_実投与回数 <- Chemical_Deviation(2, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 4, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.4回, flowsheet", i, "$VCR減量.mg.)")))
-  eval(parse(text = paste0("flowsheet", i, "$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i, "$VCR_総投与量_percent <- Chemical_Deviation(3, flowsheet", i,
                            "$Body_Surface_Area, 1.5, 4, flowsheet", i, "$VCR実投与量.mg..回, flowsheet",i,
                            "$VCR実投与回数.4回, flowsheet", i, "$VCR減量.mg.)")))
 }
@@ -479,14 +479,14 @@ for(i in 13:20){
 
 # 中間維持療法は体表面積のみ計算
 for(i in c(21:26, 30, 34, 38, 42)){
-  eval(parse(text = paste0("flowsheet", i, 
+  eval(parse(text = paste0("flowsheet", i,
                            "$Body_Surface_Area <- Body_Surface_Area(flowsheet", i, "$身長.cm., flowsheet", i, "$体重.kg.)")))}
 # 逸脱一覧を作成する
 for(i in c(1, 3:20)){
   assign(paste0("flowsheet_chemical_dev", i), Deviation(eval(parse(text = paste0("flowsheet", i)))))
 }
 
-# Output 
+# Output
 # dir.create("../output/review")
 for(i in c(1, 3:20)){
   eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))

@@ -11,9 +11,9 @@ Dxt <- function(flowsheet){
 }
 
 ## Config #####
-prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/cleaning"
-kDownLoadDate <- "_180601_1009"  # フローシートのダウンロード日
-kDev <- "ALL-B12_deviations_180601_1209.csv"
+prtpath <- "//ARONAS/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R/CRFreview"
+kDownLoadDate <- "_180702_1146"  # フローシートのダウンロード日
+kDev <- "ALL-B12_deviations_180702_1227.csv"
 ###############
 # Read csv
 list <- list.files(paste0(prtpath, "./rawdata"))
@@ -57,12 +57,12 @@ dxt_deviations <- deviations[substring(deviations$入力値.表示データ., 9,
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日(治療開始日)",]
 # 強化療法のday1投与日を削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日",]
-# 強化療法の本コース最終投与日を削除 
+# 強化療法の本コース最終投与日を削除
 dxt_deviations_0 <- subset(dxt_deviations, dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日" )
 dxt_deviations_1 <- dxt_deviations[dxt_deviations$フィールドラベル == "本コース試験治療薬剤最終投与日" ,]
 dxt_deviations_2 <- dxt_deviations_1[dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB)" | dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+L)" |  dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+VL)", ]
 dxt_deviations <- rbind(dxt_deviations_0, dxt_deviations_2)
-# followupを削除 
+# followupを削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "最終転帰確認日", ]
 colnames(dxt_deviations)[2] <- "症例登録番号"
 dxt_deviations$key <- paste0(dxt_deviations$症例登録番号, dxt_deviations$sheet.name)

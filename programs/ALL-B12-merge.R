@@ -47,16 +47,16 @@ MakeDataSet_1 <- function(dataframe){
 # kDownLoadDate <- "_171116_1434"
 # kJplsg <- "JPLSG_registration_171109_1228.csv"
 # #########################################################
-# よみこみ
+# よみこみ 
 list <- list.files(paste0(prtpath, "./rawdata"))
 file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
 df.name <- gsub("ALL-B12_", "",file.name)
 setwd(paste0(prtpath, "./rawdata"))
 for (i in 1:length(list)) {
-   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
+   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c(""), fileEncoding="CP932", stringsAsFactors=F))
 }
 # JPLSG_registrationを単独でよみこむ
-jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""))
+jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""), fileEncoding="CP932", stringsAsFactors=F)
 dxt_bd <- jp[, c(8, 37)]
 
 # リスク、中止などの情報を含んだ基本的なデータセットの作成

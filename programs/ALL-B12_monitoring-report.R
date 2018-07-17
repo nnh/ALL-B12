@@ -44,14 +44,18 @@ df_2$initial_status <- ifelse(is.na(df_2$腫瘍芽球....1), "未提出",
                               ifelse(df_2$腫瘍芽球....1 == -1.0, "不検", "提出"))
 
 # riskを締め切り日でカット、必要項目抽出、マージ
-date_cut_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "初発時CNS浸潤.", "PSL反応性評価", "HR因子.染色体本数.G.band.", "HR因子.キメラ遺伝子結果" )]
+date_cut_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "初発時CNS浸潤.", "PSL反応性評価", "HR因子.染色体本数.G.band.", "HR因子.キメラ遺伝子結果", "暫定リスク判定結果" )]
 df_3 <- merge(df_2, date_cut_risk1, by = "症例登録番号", all.x = T)
 df_3$risk1_status <- ifelse(is.na(df_3$初発時CNS浸潤.), "未提出", "提出")
 
+# riskを締め切り日でカット、必要項目抽出、マージ
+date_cut_risk2 <- risk2[format(as.Date(risk2$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "確定リスク判定結果")]
+df_8 <- merge(df_3, date_cut_risk2, by = "症例登録番号", all.x = T)
+df_8$risk2_status <- ifelse(is.na(df_8$確定リスク判定結果), "未提出", "提出")
 
 # 中止届を締め切り日でカット、必要項目抽出、マージ
 date_cut_cancel <- cancel[format(as.Date(cancel$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "field10", "治療終了.中止.理由")]
-df_4 <- merge(df_3, date_cut_cancel, by = "症例登録番号", all.x = T)
+df_4 <- merge(df_8, date_cut_cancel, by = "症例登録番号", all.x = T)
 df_5 <-  subset(df_4, df_4$field10 != 3)
 df_6 <-  subset(df_5, df_5$field10 != 4 )
 df_7 <- subset(df_4, is.na(df_4$field10))

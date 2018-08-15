@@ -4,15 +4,15 @@
 #ver.3.0
 #*******************************************
 ## 読み込みファイル名の定義
-path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第10回/R"
+path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R"
 # in_sae_1：締め切り日直後のDLdataの保管場所とファイル名
-path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_171201_0903.csv"
+path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_180601_1009.csv"
 # in_sae_2：定モニ用のDLdataの保管場所とファイル名
-path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180209_1234.csv"
+path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
 
 #出力日設定
 path_output <- "/report/output/"
-Date_output  <- "20180215"
+Date_output  <- "20180815"
 #########################################
 
 #出力ファイルの定義

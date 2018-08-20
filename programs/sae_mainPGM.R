@@ -6,13 +6,14 @@
 ## 読み込みファイル名の定義
 path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R"
 # in_sae_1：締め切り日直後のDLdataの保管場所とファイル名
-path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_180601_1009.csv"
-# in_sae_2：定モニ用のDLdataの保管場所とファイル名
-path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
-
+path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
+# # in_sae_2：定モニ用のDLdataの保管場所とファイル名
+# path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
+day_start <- "2017/12/01"
+day_end <- "2018/05/31"
 #出力日設定
 path_output <- "/report/output/"
-Date_output  <- "20180815"
+Date_output  <- "20180820"
 #########################################
 
 #出力ファイルの定義
@@ -49,17 +50,7 @@ AEOUT <- "報告時の転帰"
 # CTCAEファイルの読み込み
 ctcae <- read.csv(paste0(path, "./report/input/CTCAEv4.0.csv"), as.is=T)
 # SAE報告書の読み込み
-sae_1 <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
-sae_2 <- read.csv(paste0(path, path_sae_2), as.is = T, na.strings = "" )
-
-# 第一回目のDLデータ時点のデータから、作成日、症例番号、最終報告の列をとる
-dxt_sae_1 <- sae_1[, c(DayCutoff, USUBJID, "報告番号", LastReport)]
-dxt_sae_1$key <- paste0(dxt_sae_1$症例登録番号, "_", dxt_sae_1$報告番号)
-colnames(dxt_sae_1) <- paste0("sae.1.", colnames(dxt_sae_1))
-
-# 定モニ用データとマージ
-sae_2$key <- paste0(sae_2$症例登録番号, "_", sae_2$報告番号)
-sae <- merge(dxt_sae_1, sae_2, by.x = "sae.1.key", by.y = "key",  all = T)
+sae <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
 
 #SAE報告書のMedDRA codeとgradeを分割する
 sae$MedDRAcode <- sub("-.*", "", sae$有害事象名)
@@ -68,14 +59,27 @@ sae$grade <- sub("^.*.-", "", sae$有害事象名)
 # マージする
 saeCTCAE <- merge(sae,ctcae,by.x="MedDRAcode",by.y="CTCAE.v4.0..MedDRA..v12.0.Code",all.x=T)
 
+# SAE番号-症例番号の列を追加、リストにする
+saeCTCAE$症例番号_報告番号 <- paste0(saeCTCAE$症例登録番号, "_", sub("-.*", "", sae$報告番号))
+list_sae <- levels(factor(saeCTCAE$症例番号_報告番号))
+# min.sakuseibiに第一報の作成日を入力
+ads <- NULL
+for(i in 1:length(list_sae)){
+  df <- subset(saeCTCAE, saeCTCAE$症例番号_報告番号 == list_sae[i])
+  df$min.sakuseibi <- min(df$作成日)
+  ads <- rbind(ads, df)
+}
+ads$第一報が定モニ対象期間の提出である <- ifelse(ads$min.sakuseibi >= day_start & ads$min.sakuseibi <= day_end, "はい", "いいえ")
+ads$この報告は追加報告である<- ifelse(sub("^.*.-", "", ads$報告番号) != "A", "はい", "いいえ")
 # 報告分類で分ける
 ## 通常報告「field296」が「3：(3)通常報告（15日以内に報告)」と「4：(5)追加報告（通常報告後）」のデータを抽出
-subnomal <- subset(saeCTCAE, field296=="3" | field296=="4")　#field番号の確認を！
+subnomal <- subset(ads, field296=="3" | field296=="4")　#field番号の確認を！
 # 必要項目を抽出
 nomalbase <- subnomal[,c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport,
                          NomalReport,Others,StudyCourse,StudyProgress,AETERM,AETOXGR,
                          Content,CausalityTherapy,CausalityMed, CausalityOthers, 
-                         CausalityOption, AEOUT, AEENDTC, LastReport, "sae.1.作成日", "sae.1.最終報告")]
+                         CausalityOption, AEOUT, AEENDTC, LastReport, "min.sakuseibi", 
+                         "第一報が定モニ対象期間の提出である", "この報告は追加報告である")]
 
 names(nomalbase)[4] <- c("施設名" )
 names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
@@ -89,12 +93,13 @@ sortlist <- order(nomalbase$有害事象報告日)
 nomaltrue <- nomalbase[sortlist, ]
 nomaltrue[is.na(nomaltrue)] <- ""
 ##緊急報告                 
-subemergency <- subset(saeCTCAE, field296=="1"|field296=="2"|field296=="7")
+subemergency <- subset(ads, field296=="1"|field296=="2"|field296=="7")
 #必要項目を抽出
 emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport, 
                                   EmergencyReport1, EmergencyReport2, Others, StudyCourse, StudyProgress, 
                                   AETERM, AETOXGR, Content, CausalityTherapy, CausalityMed, CausalityOthers, 
-                                  CausalityOption, AEOUT, AEENDTC, LastReport, "sae.1.作成日", "sae.1.最終報告")]
+                                  CausalityOption, AEOUT, AEENDTC, LastReport, "min.sakuseibi", 
+                                  "第一報が定モニ対象期間の提出である", "この報告は追加報告である")]
 
 names(emergencybase)
 names(emergencybase)[4] <- c("施設名" )

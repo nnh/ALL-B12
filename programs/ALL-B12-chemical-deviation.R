@@ -60,8 +60,8 @@ Deviation <- function(flowsheet) {
 # output,rawdataはaronas上にて入出力する
 prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第12回/R/cleaning"
 # 締め切り日、ダウンロード日の
-flg <- 2  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
-kDateShimekiri_start <- "20181203"  # flg==2の時に設定
+flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
+kDateShimekiri_start <- "20180601"  # flg==2の時に設定
 kDateShimekiri <- "20181130"
 kDownLoadDate <- "_181203_0910"
 kJplsg <- "JPLSG_registration_181203_1051.csv"

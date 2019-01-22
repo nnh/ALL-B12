@@ -4,16 +4,16 @@
 #ver.3.0
 #*******************************************
 ## 読み込みファイル名の定義
-path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第11回/R"
+path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第12回/R"
 # in_sae_1：締め切り日直後のDLdataの保管場所とファイル名
-path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
+path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_190108_1124.csv"
 # # in_sae_2：定モニ用のDLdataの保管場所とファイル名
-# path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_180806_1054.csv"
-day_start <- "2017/12/01"
-day_end <- "2018/05/31"
+# path_sae_2 <- "/report/rawdata/ALL-B12_sae_report_190108_1124.csv"
+# day_start <- "2018/05/01"
+# day_end <- "2018/11/30"
 #出力日設定
 path_output <- "/report/output/"
-Date_output  <- "20180820"
+Date_output  <- "201960122"
 #########################################
 
 #出力ファイルの定義
@@ -69,8 +69,8 @@ for(i in 1:length(list_sae)){
   df$min.sakuseibi <- min(df$作成日)
   ads <- rbind(ads, df)
 }
-ads$第一報が定モニ対象期間の提出である <- ifelse(ads$min.sakuseibi >= day_start & ads$min.sakuseibi <= day_end, "はい", "いいえ")
-ads$この報告は追加報告である<- ifelse(sub("^.*.-", "", ads$報告番号) != "A", "はい", "いいえ")
+# ads$第一報が定モニ対象期間の提出である <- ifelse(ads$min.sakuseibi >= day_start & ads$min.sakuseibi <= day_end, "はい", "いいえ")
+# ads$この報告は追加報告である<- ifelse(sub("^.*.-", "", ads$報告番号) != "A", "はい", "いいえ")
 # 報告分類で分ける
 ## 通常報告「field296」が「3：(3)通常報告（15日以内に報告)」と「4：(5)追加報告（通常報告後）」のデータを抽出
 subnomal <- subset(ads, field296=="3" | field296=="4")　#field番号の確認を！
@@ -78,8 +78,7 @@ subnomal <- subset(ads, field296=="3" | field296=="4")　#field番号の確認�
 nomalbase <- subnomal[,c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport,
                          NomalReport,Others,StudyCourse,StudyProgress,AETERM,AETOXGR,
                          Content,CausalityTherapy,CausalityMed, CausalityOthers, 
-                         CausalityOption, AEOUT, AEENDTC, LastReport, "min.sakuseibi", 
-                         "第一報が定モニ対象期間の提出である", "この報告は追加報告である")]
+                         CausalityOption, AEOUT, AEENDTC, LastReport)]
 
 names(nomalbase)[4] <- c("施設名" )
 names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
@@ -98,8 +97,7 @@ subemergency <- subset(ads, field296=="1"|field296=="2"|field296=="7")
 emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport, 
                                   EmergencyReport1, EmergencyReport2, Others, StudyCourse, StudyProgress, 
                                   AETERM, AETOXGR, Content, CausalityTherapy, CausalityMed, CausalityOthers, 
-                                  CausalityOption, AEOUT, AEENDTC, LastReport, "min.sakuseibi", 
-                                  "第一報が定モニ対象期間の提出である", "この報告は追加報告である")]
+                                  CausalityOption, AEOUT, AEENDTC, LastReport)]
 
 names(emergencybase)
 names(emergencybase)[4] <- c("施設名" )

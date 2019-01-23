@@ -44,7 +44,7 @@ df_2$initial_status <- ifelse(is.na(df_2$腫瘍芽球....1), "未提出",
                               ifelse(df_2$腫瘍芽球....1 == -1.0, "不検", "提出"))
 
 # riskを締め切り日でカット、必要項目抽出、マージ
-date_cut_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "初発時CNS浸潤.", "PSL反応性評価", "HR因子.染色体本数.G.band.")]
+date_cut_risk1 <- risk1[format(as.Date(risk1$作成日), "%Y%m%d") <= kDateShimekiri, c("症例登録番号", "初発時CNS浸潤.", "PSL反応性評価", "HR因子.染色体本数.G.band.", "HR因子.キメラ遺伝子結果" )]
 df_3 <- merge(df_2, date_cut_risk1, by = "症例登録番号", all.x = T)
 df_3$risk1_status <- ifelse(is.na(df_3$初発時CNS浸潤.), "未提出", "提出")
 

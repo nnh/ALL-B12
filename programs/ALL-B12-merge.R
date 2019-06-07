@@ -3,7 +3,7 @@
 # 20170817 
 
 # 関数の設定
-# 列抽出とAEgrade切り離し、ファイルの出力をする関数
+# 列抽出、ファイルの出力をする関数
 MakeDataSet <- function(dataframe){
   if(flg == 1){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
@@ -15,18 +15,7 @@ MakeDataSet <- function(dataframe){
     flowsheet_df <- datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
                                c(1:10, seq(11, length(colnames(datecut_df)), by = 2))]
   }
-  merge_df <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
-  number <- match("貧血", colnames(merge_df))  # 貧血の行数を検索
-  numberplus3 <- number+3
-  numberplus4 <- number+4
-  numberplus5 <- number+5
-  numberminus1 <- number-1
-  ae_grade_0 <- merge_df[, number:numberplus3]
-  ae_grade_1 <- merge_df[, c(numberplus5:length(colnames(merge_df)))]
-  ae_grade_dxt_0 <- sapply(ae_grade_0, substring, 10, 10)
-  ae_grade_dxt_1 <- sapply(ae_grade_1, substring, 10, 10)
-  上記4項目の血液毒性を除く有害事象有無 <- merge_df[, numberplus4]
-  result <- cbind(merge_df[, c(1:numberminus1)], ae_grade_dxt_0, 上記4項目の血液毒性を除く有害事象有無, ae_grade_dxt_1)
+  result <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
   result[is.na(result)] <- ""
   write.csv(result, paste0("../output/flowsheet",i,".csv"), row.names =  F)
 }　 
@@ -36,6 +25,10 @@ MakeDataSet_1 <- function(dataframe){
     datecut_df[is.na(datecut_df)] <- ""
     datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ] 
 }  
+
+Right<-function(x, chr){
+  return(substr(x, nchar(x)-chr+1, nchar(x)))
+}
 
 # #### 設定 ######################
 # # # output,rawdataはaronas上にて入出力する

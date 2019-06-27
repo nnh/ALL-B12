@@ -12,12 +12,12 @@ Sys.setlocale("LC_TIME", "C") #必須：日本時間にコンピュータ設定�
 # dataの読み込み
 #-- 設定-------------------------------------------------------------------------------------------------------------
 # # output,rawdataはaronas上にて入出力する
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第12回/R/CRFreview"
+prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第13回/R/cleaning"
 # # 締め切り日、ダウンロード日の
-kDateShimekiri_srt <- "20180601"
-kDateShimekiri <- "20181130"
-kDownLoadDate <- "_190108_1124"
-kJplsg <- "JPLSG_registration_190108_1137.csv"
+kDateShimekiri_srt <- "20181201"
+kDateShimekiri <- "20190531"
+kDownLoadDate <- "_190605_0913"
+kJplsg <- "JPLSG_registration_190603_1611.csv"
 #---------------------------------------------------------------------------------------------------------------------
 # よみこみ
 list <- list.files(paste0(prtpath, "./rawdata"))

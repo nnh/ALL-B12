@@ -10,7 +10,7 @@ path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_190605_0913.csv"
 
 #出力日設定
 path_output <- "/cleaning/output/"
-Date_output  <- "20190619"
+Date_output  <- "20190801"
 #########################################
 
 #出力ファイルの定義
@@ -23,14 +23,14 @@ DayCutoff <- "作成日"
 Hp <- "シート作成時施設名"
 DayReport <- "有害事象報告日"
 ClassReport <- "報告分類"
-NomalReport <- "X.3.通常報告.15日以内に報告."
-EmergencyReport1 <- "X.1.緊急一次報告.72時間以内に報告."
-EmergencyReport2 <- "X.2.緊急二次報告.15日以内に報告."
-Others <- "X..その他重大な医学的事象.選択.詳細"
-StudyCourse <- "発生時期.治療コース名"
-StudyProgress <- "発生時期.コース内"
+NomalReport <- "（3）通常報告（15日以内に報告）"
+EmergencyReport1 <-  "（1）緊急一次報告（72時間以内に報告）"
+EmergencyReport2 <- "（2）緊急二次報告（15日以内に報告）"
+Others <- "　「その他重大な医学的事象」選択：詳細"
+StudyCourse <- "発生時期：治療コース名"
+StudyProgress <- "発生時期：コース内"
 Content <- "経過内容"
-CausalityTherapy <- "因果関係.原因と考えられる治療法."
+CausalityTherapy <- "因果関係(原因と考えられる治療法）"
 CausalityMed <- "因果関係疑いの試験薬"
 CausalityOthers <- "因果関係疑いその他_詳細"
 CausalityOption <- "該当する因果関係を選択して下さい"
@@ -47,8 +47,10 @@ AEOUT <- "報告時の転帰"
 # # CTCAEファイルの読み込み
 # ctcae <- read.csv(paste0(path, "./report/input/CTCAEv4.0.csv"), as.is=T)
 # SAE報告書の読み込み
-sae <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
-
+sae <- read.csv(paste0(path, path_sae_1), as.is=T, fileEncoding="CP932", stringsAsFactors=F, header=F)
+# sae <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
+colnames(sae) <- sae[1, ]
+input_csv <- input_csv[-1, ]
 #SAE報告書のMedDRA codeとgradeを分割する
 sae$grade <- sub("^.*.-", "", sae$有害事象名)
 sae$有害事象名 <- sub("-.*", "", sae$有害事象名)
@@ -63,10 +65,10 @@ nomalbase <- subnomal[,c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, C
                          CausalityOption, AEOUT, AEENDTC, LastReport)]
 
 names(nomalbase)[4] <- c("施設名" )
-names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
-                            "発生時期:治療コース名",  "発生時期:コース内" )
+# names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
+#                             "発生時期:治療コース名",  "発生時期:コース内" )
 names(nomalbase)[12] <- c("有害事象名")
-names(nomalbase)[15] <- c("因果関係(原因と考えられる治療法)")
+# names(nomalbase)[15] <- c("因果関係(原因と考えられる治療法)")
 
 
 #有害事象報告日でソートする
@@ -83,10 +85,10 @@ emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, A
 
 names(emergencybase)
 names(emergencybase)[4] <- c("施設名" )
-names(emergencybase)[8:12] <- c("(1)緊急一次報告(72時間以内に報告)", "(2)緊急二次報告(15日以内に報告)", 
-                                "「その他重大な医学的事象」選択:詳細", 
-                                "発生時期:治療コース名", "発生時期:コース内")
-names(emergencybase)[16] <- c("因果関係(原因と考えられる治療法)")
+# names(emergencybase)[8:12] <- c("(1)緊急一次報告(72時間以内に報告)", "(2)緊急二次報告(15日以内に報告)", 
+#                                 "「その他重大な医学的事象」選択:詳細", 
+#                                 "発生時期:治療コース名", "発生時期:コース内")
+# names(emergencybase)[16] <- c("因果関係(原因と考えられる治療法)")
 names(emergencybase)[13] <- c("有害事象名")
 
 

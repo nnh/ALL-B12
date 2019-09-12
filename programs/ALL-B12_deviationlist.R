@@ -1,10 +1,8 @@
 # ALL-B12_deviationlistPGM.R
 # 作成者：kaoru torii
 # 作成日：2016/06/15
-# ver.2.0
 # 作成者：mamiko yonejima
 # 作成日：2017/10/19
-# ver.3.0
 #########################
 Dxt <- function(flowsheet){
   flowsheet[, c(1, 2, 9)]

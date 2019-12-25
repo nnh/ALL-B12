@@ -6,10 +6,10 @@
 ## 読み込みファイル名の定義
 path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第14回/R"
 #読み込みファイル名
-path_sae_1 <- "/CRFreview/rawdata/ALL-B12_sae_report_190701_1020.csv"
+path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_191202_1041.csv"
 
 #出力日設定
-path_output <- "/CRFreview/output/"
+path_output <- "/cleaning/output/"
 Date_output  <- Sys.Date()
 #########################################
 

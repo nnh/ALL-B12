@@ -6,16 +6,16 @@
 ## 読み込みファイル名の定義
 path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第14回/R"
 #読み込みファイル名
-path_sae_1 <- "/cleaning/rawdata/ALL-B12_sae_report_191202_1041.csv"
+path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_200205_1111.csv"
 
 #出力日設定
-path_output <- "/cleaning/output/"
+path_output <- "/report/output/"
 Date_output  <- Sys.Date()
 #########################################
 
 #出力ファイルの定義
-OutputFile1 <- paste("nomalsae_cutoffdate", Date_output, ".csv",sep = "")    #通常
-OutputFile2 <- paste("emergencysae_cutoffdate", Date_output, ".csv", sep = "")   #緊急
+OutputFile1 <- paste("nomalsae", Date_output, ".csv",sep = "")    #通常
+OutputFile2 <- paste("emergencysae", Date_output, ".csv", sep = "")   #緊急
 
 #変数名の定義 #未定義
 ReportNo <- "報告番号"
@@ -50,7 +50,7 @@ AEOUT <- "報告時の転帰"
 sae <- read.csv(paste0(path, path_sae_1), as.is=T, fileEncoding="CP932", stringsAsFactors=F, header=F)
 # sae <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
 colnames(sae) <- sae[1, ]
-input_csv <- input_csv[-1, ]
+sae <- sae[-1, ]
 #SAE報告書のMedDRA codeとgradeを分割する
 sae$grade <- sub("^.*.-", "", sae$有害事象名)
 sae$有害事象名 <- sub("-.*", "", sae$有害事象名)

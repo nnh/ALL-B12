@@ -4,9 +4,9 @@
 #ver.4.0
 #*******************************************
 ## 読み込みファイル名の定義
-path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第14回/R"
+path <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第15回/R"
 #読み込みファイル名
-path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_200205_1111.csv"
+path_sae_1 <- "/report/rawdata/ALL-B12_sae_report_200701_1212.csv"
 
 #出力日設定
 path_output <- "/report/output/"

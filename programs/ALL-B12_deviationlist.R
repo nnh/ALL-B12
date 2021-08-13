@@ -9,9 +9,9 @@ Dxt <- function(flowsheet){
 }
 
 ## Config #####
-prtpath <- "//192.168.200.222/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第14回/R/cleaning"
-kDownLoadDate <- "_191202_1041"  # フローシートのDL日付
-kDev <- "ALL-B12_deviations_191202_1059.csv"
+prtpath <- "//aronas/Datacenter/Trials/JPLSG/22_ALL-B12/04.03.02 定期モニタリングレポート/第16回/R/cleaning"
+kDownLoadDate <- "_201201_1106"  # フローシートのDL日付
+kDev <- "ALL-B12_deviations_201201_1154.csv"
 ###############
 # Read csv
 list <- list.files(paste0(prtpath, "./rawdata"))
@@ -55,19 +55,19 @@ dxt_deviations <- deviations[substring(deviations$入力値.表示データ., 9,
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日(治療開始日)",]
 # 強化療法のday1投与日を削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "day1投与日",]
-# 強化療法の本コース最終投与日を削除 
+# 強化療法の本コース最終投与日を削除
 dxt_deviations_0 <- subset(dxt_deviations, dxt_deviations$フィールドラベル != "本コース試験治療薬剤最終投与日" )
 dxt_deviations_1 <- dxt_deviations[dxt_deviations$フィールドラベル == "本コース試験治療薬剤最終投与日" ,]
 dxt_deviations_2 <- dxt_deviations_1[dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB)" | dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+L)" |  dxt_deviations_1$シート名 == "フローシート：早期強化療法(IB+VL)", ]
 dxt_deviations <- rbind(dxt_deviations_0, dxt_deviations_2)
-# followupを削除 
+# followupを削除
 dxt_deviations <- dxt_deviations[dxt_deviations$フィールドラベル != "最終転帰確認日", ]
 colnames(dxt_deviations)[2] <- "症例登録番号"
 dxt_deviations$key <- paste0(dxt_deviations$症例登録番号, dxt_deviations$sheet.name)
 #施設名を抽出
 dxt_deviations$施設名<- sub("-.*","",dxt_deviations$施設名科名)
 #必要な項目の抽出
-dxt_deviations　<- dxt_deviations[,c("症例登録番号", "順序付きフローシート順序", "施設名","シート名", "フィールドラベル", "入力値.表示データ.", "key")]
+dxt_deviations　<- dxt_deviations[,c("症例登録番号", "施設名","シート名", "フィールドラベル", "入力値.表示データ.", "key")]
 #リスクシートのマージ
 risk <- merge(risk1, risk2, by = "症例登録番号", all = T)
 #症例番号、暫定リスク、確定リスクの抽出
@@ -81,7 +81,7 @@ m_risk_dev_cancel <- merge(m_risk_dev, dxt_cancel, by = "症例登録番号", al
 result <- merge(matSum, m_risk_dev_cancel, by = "key", all.y = T)
 result <- result[, -1]
 #ソートする
-result<- result[order(result$順序付きフローシート順序),]
+# result<- result[order(result$順序付きフローシート順序),]
 #csvファイルへの書き出し
 result[is.na(result)] <- ""
 write.csv(result, eval(parse(text = paste0("'", prtpath, "/output/deviation/deviations.csv'"))), row.names=FALSE)

@@ -47,7 +47,7 @@ AEOUT <- "報告時の転帰"
 # # CTCAEファイルの読み込み
 # ctcae <- read.csv(paste0(path, "./report/input/CTCAEv4.0.csv"), as.is=T)
 # SAE報告書の読み込み
-sae <- read.csv(paste0(path, path_sae_1), as.is=T, fileEncoding="CP932", stringsAsFactors=F, header=F)
+sae <- read.csv(paste0(path, path_sae_1), as.is=T, fileEncoding="UTF-8-BOM", stringsAsFactors=F, header=F)
 # sae <- read.csv(paste0(path, path_sae_1), as.is = T, na.strings = "" )
 colnames(sae) <- sae[1, ]
 sae <- sae[-1, ]
@@ -61,42 +61,42 @@ subnomal <- subset(ads, field296=="3" | field296=="4")　#field番号の確認�
 # 必要項目を抽出
 nomalbase <- subnomal[,c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport,
                          NomalReport,Others,StudyCourse,StudyProgress,AETERM,AETOXGR,
-                         Content,CausalityTherapy,CausalityMed, CausalityOthers, 
+                         Content,CausalityTherapy,CausalityMed, CausalityOthers,
                          CausalityOption, AEOUT, AEENDTC, LastReport)]
 
 names(nomalbase)[4] <- c("施設名" )
-# names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細", 
+# names(nomalbase)[8:11] <- c("(3)通常報告(15日以内に報告)","「その他重大な医学的事象」選択:詳細",
 #                             "発生時期:治療コース名",  "発生時期:コース内" )
 names(nomalbase)[12] <- c("有害事象名")
 # names(nomalbase)[15] <- c("因果関係(原因と考えられる治療法)")
 
 
 #有害事象報告日でソートする
-sortlist <- order(nomalbase$有害事象報告日) 
+sortlist <- order(nomalbase$有害事象報告日)
 nomaltrue <- nomalbase[sortlist, ]
 nomaltrue[is.na(nomaltrue)] <- ""
-##緊急報告                 
+##緊急報告
 subemergency <- subset(ads, field296=="1"|field296=="2"|field296=="7")
 #必要項目を抽出
-emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport, 
-                                  EmergencyReport1, EmergencyReport2, Others, StudyCourse, StudyProgress, 
-                                  AETERM, AETOXGR, Content, CausalityTherapy, CausalityMed, CausalityOthers, 
+emergencybase <- subemergency[, c(ReportNo, DayCutoff, USUBJID, Hp, DayReport, AESTDTC, ClassReport,
+                                  EmergencyReport1, EmergencyReport2, Others, StudyCourse, StudyProgress,
+                                  AETERM, AETOXGR, Content, CausalityTherapy, CausalityMed, CausalityOthers,
                                   CausalityOption, AEOUT, AEENDTC, LastReport)]
 
 names(emergencybase)
 names(emergencybase)[4] <- c("施設名" )
-# names(emergencybase)[8:12] <- c("(1)緊急一次報告(72時間以内に報告)", "(2)緊急二次報告(15日以内に報告)", 
-#                                 "「その他重大な医学的事象」選択:詳細", 
+# names(emergencybase)[8:12] <- c("(1)緊急一次報告(72時間以内に報告)", "(2)緊急二次報告(15日以内に報告)",
+#                                 "「その他重大な医学的事象」選択:詳細",
 #                                 "発生時期:治療コース名", "発生時期:コース内")
 # names(emergencybase)[16] <- c("因果関係(原因と考えられる治療法)")
 names(emergencybase)[13] <- c("有害事象名")
 
 
 #有害事象報告日でソートする
-sortlist <- order(emergencybase$有害事象報告日) 
+sortlist <- order(emergencybase$有害事象報告日)
 emergencytrue <- emergencybase[sortlist, ]
 emergencytrue[is.na(emergencytrue)] <- ""
-# 
+#
 # #ファイルの出力
 # PathOut <- setwd("../output")   #ディレクトリの変更
 

@@ -1,16 +1,16 @@
 # ALL-B12 基本的な情報をマージするプログラム
 # Mamiko Yonejima
-# 20170817 
+# 20170817
 
 # 関数の設定
 # 列抽出、ファイルの出力をする関数
 MakeDataSet <- function(dataframe){
   if(flg == 1){
-    datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
+    datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri,
                             c(1:10, 15:length(colnames(dataframe)))]
     flowsheet_df <- datecut_df[, c(1:10, seq(11, length(colnames(datecut_df)), by = 2))]
   }else{
-    datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, 
+    datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri,
                             c(1:10, 15:length(colnames(dataframe)))]
     flowsheet_df <- datecut_df[format(as.Date(datecut_df$作成日), "%Y%m%d") >= kDateShimekiri_start,
                                c(1:10, seq(11, length(colnames(datecut_df)), by = 2))]
@@ -18,13 +18,13 @@ MakeDataSet <- function(dataframe){
   result <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
   result[is.na(result)] <- ""
   write.csv(result, paste0("../output/flowsheet",i,".csv"), row.names =  F)
-}　 
+}　
 # mergeせず、列抽出のみの関数
 MakeDataSet_1 <- function(dataframe){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
     datecut_df[is.na(datecut_df)] <- ""
-    datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ] 
-}  
+    datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ]
+}
 
 Right<-function(x, chr){
   return(substr(x, nchar(x)-chr+1, nchar(x)))
@@ -40,16 +40,16 @@ Right<-function(x, chr){
 # kDownLoadDate <- "_181203_0910"
 # kJplsg <- "JPLSG_registration_181203_1051.csv"
 # #########################################################
-# よみこみ 
+# よみこみ
 list <- list.files(paste0(prtpath, "./rawdata"))
 file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
 df.name <- gsub("ALL-B12_", "",file.name)
 setwd(paste0(prtpath, "./rawdata"))
 for (i in 1:length(list)) {
-   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c(""), fileEncoding="CP932", stringsAsFactors=F))
+   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c(""), fileEncoding="UTF-8-BOM", stringsAsFactors=F))
 }
 # JPLSG_registrationを単独でよみこむ
-jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""), fileEncoding="CP932", stringsAsFactors=F)
+jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""), fileEncoding="UTF-8-BOM", stringsAsFactors=F)
 dxt_bd <- jp[, c(8, 37)]
 # リスク、中止などの情報を含んだ基本的なデータセットの作成
 cutdate_registration <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, c(1, 8, 9)]
@@ -95,12 +95,12 @@ all_risk[is.na(all_risk)] <- ""
 write.csv(all_risk, "../output/review/risk_allSheet.csv" , row.names =  F)
 # registrationの処理とファイルの書き出し
 datecut_df <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, ]
-result <- datecut_df[, c(1:11,seq(13,length(colnames(datecut_df)), by = 2)) ] 
+result <- datecut_df[, c(1:11,seq(13,length(colnames(datecut_df)), by = 2)) ]
 write.csv(result, "../output/registration.csv", row.names =  F)
 write.csv(result, "../output/review/registration.csv", row.names =  F)
 # initial, flowsheet1の処理とファイルの書き出し
 datecut_df <- initial[format(as.Date(initial$作成日), "%Y%m%d") <= kDateShimekiri, ]
-initial_df <- datecut_df[, c(1:11, seq(15, length(colnames(initial)), by = 2)) ] 
+initial_df <- datecut_df[, c(1:11, seq(15, length(colnames(initial)), by = 2)) ]
 dxt.flowsheet1 <- flowsheet1[, c(9, 17)]
 colnames(dxt.flowsheet1)[2] <- "flowsheet1_治療開始日"
 result <- merge(dxt.flowsheet1, initial_df, by = "症例登録番号", all.y = T)

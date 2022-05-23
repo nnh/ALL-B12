@@ -16,13 +16,13 @@ MakeDataSet <- function(dataframe){
                                c(1:10, seq(11, length(colnames(datecut_df)), by = 2))]
   }
   result <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
-  result[is.na(result)] <- ""
+  # result[is.na(result)] <- ""
   write.csv(result, paste0("../output/flowsheet",i,".csv"), row.names =  F)
 }　
 # mergeせず、列抽出のみの関数
 MakeDataSet_1 <- function(dataframe){
     datecut_df <- dataframe[format(as.Date(dataframe$作成日), "%Y%m%d") <= kDateShimekiri, ]
-    datecut_df[is.na(datecut_df)] <- ""
+    # datecut_df[is.na(datecut_df)] <- ""
     datecut_df[, c(1:11, seq(13, length(colnames(datecut_df)), by = 2)) ]
 }
 
@@ -46,10 +46,10 @@ file.name <- sub(paste0(kDownLoadDate,".*"), "", list)
 df.name <- gsub("ALL-B12_", "",file.name)
 setwd(paste0(prtpath, "./rawdata"))
 for (i in 1:length(list)) {
-   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c(""), fileEncoding="UTF-8-BOM", stringsAsFactors=F))
+   assign(df.name[i], read_csv(list[i]))
 }
 # JPLSG_registrationを単独でよみこむ
-jp <- read.csv(paste0(prtpath, "/rawdata/", kJplsg), as.is=T, na.strings = c(""), fileEncoding="UTF-8-BOM", stringsAsFactors=F)
+jp <- read_csv(paste0(prtpath, "/rawdata/", kJplsg))
 dxt_bd <- jp[, c(8, 37)]
 # リスク、中止などの情報を含んだ基本的なデータセットの作成
 cutdate_registration <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, c(1, 8, 9)]

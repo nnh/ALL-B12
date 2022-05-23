@@ -58,14 +58,15 @@ Deviation <- function(flowsheet) {
 }
 #----- Config -----------------------------------------------------------------------------------------------------
 # output,rawdataはaronas上にて入出力する
-prtpath <- "C:/Users/MamikoYonejima/Box/Datacenter/Trials/JPLSG/22_ALL-B12/10.03.10 データレビュー書/第18回/R/cleaning/ALL-B12_sheets_211201_0829"
+prtpath <- "C:/Users/MamikoYonejima/Box/Datacenter/Trials/JPLSG/22_ALL-B12/10.03.10 データレビュー書/第18回/R/reviewcopied"
 # 締め切り日、ダウンロード日の
 flg <- 1  # 1:締め切り日1つ設定バージョン、2:定モニバージョン（startの日も設定）
 kDateShimekiri_start <- "2019601"  # flg==2の時に設定
-kDateShimekiri <- "20211130"
-kDownLoadDate <- "_211201_0829"
-kJplsg <- "JPLSG_registration_211118_1030.csv"
+kDateShimekiri <- "20220531"
+kDownLoadDate <- "_220104_1150"
+kJplsg <- "JPLSG_registration_211203_1521.csv"
 #-------------------------------------------------------------------------------------------------------------------
+library(tidyverse)
 source("./programs/ALL-B12-merge.R", encoding = "UTF-8")
 
 # ALL-B12-merge.Rで作成されたflowsheet～を読み込む

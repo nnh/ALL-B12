@@ -17,7 +17,7 @@ MakeDataSet <- function(dataframe){
   }
   result <- merge(base_df, flowsheet_df, by = "症例登録番号", all.y = T)
   # result[is.na(result)] <- ""
-  write.csv(result, paste0("../output/flowsheet",i,".csv"), row.names =  F)
+  write.csv(result, paste0("../output/flowsheet",i,".csv"),na = "", row.names =  F)
 }　
 # mergeせず、列抽出のみの関数
 MakeDataSet_1 <- function(dataframe){
@@ -70,15 +70,15 @@ for(i in c(1,3:42)){
 }
 # riskとcancelのシートの処理ととファイルの書き出し
 risk1_df <- MakeDataSet_1(risk1)
-write.csv(risk1_df, "../output/risk1.csv", row.names =  F)
+write.csv(risk1_df, "../output/risk1.csv", na = "", row.names =  F)
 risk2_df <- MakeDataSet_1(risk2)
-write.csv(risk2_df, "../output/risk2.csv", row.names =  F)
+write.csv(risk2_df, "../output/risk2.csv", na = "", row.names =  F)
 risk3_df <- MakeDataSet_1(risk3)
-write.csv(risk3_df, "../output/risk3.csv", row.names =  F)
+write.csv(risk3_df, "../output/risk3.csv", na = "", row.names =  F)
 cancel_df <- MakeDataSet_1(cancel)
-write.csv(cancel_df, "../output/cancel.csv", row.names =  F)
+write.csv(cancel_df, "../output/cancel.csv", na = "", row.names =  F)
 cancel2_df <- MakeDataSet_1(cancel2)
-write.csv(cancel2_df, "../output/cancel2.csv" , row.names =  F)
+write.csv(cancel2_df, "../output/cancel2.csv" , na = "", row.names =  F)
 # すべてのriskと中止届をマージしたシートを作成
 dir.create("../output/review")
 colnames(risk1_df) <- paste0("risk1_", colnames(risk1_df))
@@ -91,18 +91,18 @@ risk_result <- merge(merge_2, cancel_df, by.x = "risk1_症例登録番号",  by.
 dxt_allocation <- base_df[, c(1, 7:11)]
 colnames(risk_result)[1] <- "症例登録番号"
 all_risk <- merge(dxt_allocation, risk_result, by = "症例登録番号", all = T)
-all_risk[is.na(all_risk)] <- ""
-write.csv(all_risk, "../output/review/risk_allSheet.csv" , row.names =  F)
+# all_risk[is.na(all_risk)] <- ""
+write.csv(all_risk, "../output/review/risk_allSheet.csv", na = "", row.names =  F)
 # registrationの処理とファイルの書き出し
 datecut_df <- registration[format(as.Date(registration$作成日), "%Y%m%d") <= kDateShimekiri, ]
 result <- datecut_df[, c(1:11,seq(13,length(colnames(datecut_df)), by = 2)) ]
-write.csv(result, "../output/registration.csv", row.names =  F)
-write.csv(result, "../output/review/registration.csv", row.names =  F)
+write.csv(result, "../output/registration.csv", na = "", row.names =  F)
+write.csv(result, "../output/review/registration.csv", na = "", row.names =  F)
 # initial, flowsheet1の処理とファイルの書き出し
 datecut_df <- initial[format(as.Date(initial$作成日), "%Y%m%d") <= kDateShimekiri, ]
 initial_df <- datecut_df[, c(1:11, seq(15, length(colnames(initial)), by = 2)) ]
 dxt.flowsheet1 <- flowsheet1[, c(9, 17)]
 colnames(dxt.flowsheet1)[2] <- "flowsheet1_治療開始日"
 result <- merge(dxt.flowsheet1, initial_df, by = "症例登録番号", all.y = T)
-write.csv(result, "../output/initial.csv", row.names =  F)
-write.csv(result, "../output/review/initial.csv", row.names =  F)
+write.csv(result, "../output/initial.csv", na = "", row.names =  F)
+write.csv(result, "../output/review/initial.csv", na = "", row.names =  F)

@@ -490,18 +490,18 @@ for(i in c(1, 3:20)){
 # Output
 # dir.create("../output/review")
 for(i in c(1, 3:20)){
-  eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
-  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', row.names = F)")))}
+  # eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review.csv', na = '', row.names = F)")))}
 for(i in c(21:26, 30, 34, 38, 42)){
-  eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
-  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', row.names = F)")))}
+  # eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', na = '', row.names = F)")))}
 for(i in c(27:29, 31:33, 35:37, 39:41)){
-  eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
-  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', row.names = F)")))}
-flowsheet43[is.na(flowsheet43)] <- ""
-write.csv(flowsheet43, "../output/review/flowsheet43_raw.csv", row.names = F)
+  # eval(parse(text = paste0("flowsheet", i, "[is.na(flowsheet", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet", i, ",'../output/review/flowsheet", i, "_review_bsa.csv', na = '', row.names = F)")))}
+# flowsheet43[is.na(flowsheet43)] <- ""
+write.csv(flowsheet43, "../output/review/flowsheet43_raw.csv", na = "", row.names = F)
 dir.create("../output/deviation")
 for(i in c(1, 3:20)){
-  eval(parse(text = paste0("flowsheet_chemical_dev", i, "[is.na(flowsheet_chemical_dev", i, ")] <- ''")))
-  eval(parse(text = paste0("write.csv(flowsheet_chemical_dev", i, ",'../output/deviation/flowsheet", i, "_chemical_dev.csv', row.names = F)")))}
+  # eval(parse(text = paste0("flowsheet_chemical_dev", i, "[is.na(flowsheet_chemical_dev", i, ")] <- ''")))
+  eval(parse(text = paste0("write.csv(flowsheet_chemical_dev", i, ",'../output/deviation/flowsheet", i, "_chemical_dev.csv', na = '', row.names = F)")))}
 
